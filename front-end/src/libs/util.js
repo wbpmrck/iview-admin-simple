@@ -3,26 +3,30 @@ import env from '../../build/env';
 import semver from 'semver';
 import packjson from '../../package.json';
 import Cookies from 'js-cookie';
+import Config from '@/config/default';
+import Vue from 'vue';
 
 let util = {
 
 };
-util.title = function (title) {
-    title = title || 'iView admin';
+
+let currentTitle="";
+util.setTitleLang = function (lang) {
+    util.title(currentTitle,lang);
+}
+util.title = function (title,lang) {
+    // title = title || 'iView admin';
+    currentTitle = title;
+    if(typeof title ==="object"){
+        title = Vue.prototype.$t.call({$options:lang},title.i18n) || 'iView admin';
+    }else{
+        title = title || 'iView admin';
+    }
+
+
     window.document.title = title;
 };
 
-//todo:这里改成自己的接口地址
-const ajaxUrl = env === 'development'
-    ? 'http://127.0.0.1:8888'
-    : env === 'production'
-        ? 'https://www.url.com'
-        : 'https://debug.url.com';
-
-util.ajax = axios.create({
-    baseURL: ajaxUrl,
-    timeout: 30000
-});
 
 util.inOf = function (arr, targetArr) {
     let res = true;
@@ -42,12 +46,12 @@ util.oneOf = function (ele, targetArr) {
     }
 };
 
-util.getAccessInfo = function () {
-    return Cookies.getJSON('__access__');
-};
-util.setAccessInfo = function (info) {
-    Cookies.set('__access__',info);
-};
+// util.getAccessInfo = function () {
+//     return Cookies.getJSON('__access__');
+// };
+// util.setAccessInfo = function (info) {
+//     Cookies.set('__access__',info);
+// };
 /**
  * 是否有权限访问一个路由
  * @param itAccess：路由需要的权限
@@ -56,7 +60,16 @@ util.setAccessInfo = function (info) {
  */
 util.showThisRoute = function (itAccess, currentAccess) {
     // if (typeof itAccess === 'object' && Array.isArray(itAccess)) {
-    if ( Array.isArray(currentAccess)) {
+    
+    //如果是系统管理员，则所有路由都开放
+    if(currentAccess === Config.root_user_access){
+      return true;
+    }
+  
+    if (Array.isArray(currentAccess)) {
+        currentAccess = currentAccess.map((a)=>{
+            return a.name;
+        })
         return util.oneOf(itAccess, currentAccess);
     } else {
         return itAccess === currentAccess;
@@ -260,9 +273,10 @@ util.toDefaultPage = function (routers, name, route, next) {
 };
 
 util.fullscreenEvent = function (vm) {
-    vm.$store.commit('initCachepage');
+    vm.$store.commit('initCachePage');
     // 权限菜单过滤相关
-    vm.$store.commit('updateMenulist');
+    // vm.$store.commit('updateMenulist');
+    vm.$store.dispatch('updateMenulist');
     // 全屏相关
 };
 

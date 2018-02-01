@@ -5,16 +5,16 @@ export const loginRouter = {
     path: '/login',
     name: 'login',
     meta: {
-        title: {i18n:'title.login'}
+        title: {i18n: 'title.login'}
     },
-    component: resolve => { require(['@/views/login.vue'], resolve); }
+    component: resolve => { require(['@/views/login/login.vue'], resolve); }
 };
 
 export const page404 = {
     path: '/*',
     name: 'error-404',
     meta: {
-      title: {i18n:'title.404'}
+        title: {i18n: 'title.404'}
     },
     component: resolve => { require(['@/views/error-page/404.vue'], resolve); }
 };
@@ -22,7 +22,7 @@ export const page404 = {
 export const page403 = {
     path: '/403',
     meta: {
-        title: {i18n:'title.403'}
+        title: {i18n: 'title.403'}
     },
     name: 'error-403',
     component: resolve => { require(['@//views/error-page/403.vue'], resolve); }
@@ -31,7 +31,7 @@ export const page403 = {
 export const page500 = {
     path: '/500',
     meta: {
-      title: {i18n:'title.500'}
+        title: {i18n: 'title.500'}
     },
     name: 'error-500',
     component: resolve => { require(['@/views/error-page/500.vue'], resolve); }
@@ -40,6 +40,9 @@ export const page500 = {
 export const locking = {
     path: '/locking',
     name: 'locking',
+    meta: {
+        title: {i18n: 'title.locking'}
+    },
     component: resolve => { require(['@/views/main-components/lockscreen/components/locking-page.vue'], resolve); }
 };
 
@@ -48,10 +51,14 @@ export const otherRouter = {
     path: '/',
     name: 'otherRouter',
     redirect: '/home',
+    meta: {
+        title: {i18n: 'title.home'}
+    },
     component: Main,
     children: [
-        { path: 'home', title: {i18n: 'title.home'}, name: 'home_index', component: resolve => { require(['@/views/home/home.vue'], resolve); } },
-        { path: 'ownspace', title: {i18n: 'title.ownSpace'}, name: 'ownspace_index', component: resolve => { require(['@/views/own-space/own-space.vue'], resolve); } },
+        { path: 'home',  meta: {title: {i18n: 'title.home'} }, name: 'home_index', component: resolve => { require(['@/views/home/home.vue'], resolve); } },
+        { path: 'ownspace',  meta:{ title: {i18n: 'title.ownSpace'} }, name: 'ownspace_index', component: resolve => { require(['@/views/own-space/own-space.vue'], resolve); } },
+        { path: 'access/create',  meta:{ title: {i18n: 'title.access.create'} }, name: 'access_create', component: resolve => { require(['@/views/access/access-create.vue'], resolve); } },
     ]
 };
 
@@ -61,20 +68,25 @@ export const appRouter = [
         path: '/access',
         icon: 'key',
         name: 'access',
-        title: {i18n: 'title.access'},
+        meta: {
+            title: {i18n: 'title.access'}
+        },
         component: Main,
         children: [
-            { path: 'index', title: {i18n: 'title.accessIndex'}, name: 'access_index', component: resolve => { require(['@/views/access/access.vue'], resolve); } }
+            { path: 'demo',  meta:{title: {i18n: 'title.access.demo'} },name: 'access_demo', component: resolve => { require(['@/views/access/access.vue'], resolve); } },
+            { path: 'index',  meta:{title: {i18n: 'title.access.index'} },name: 'access_index', component: resolve => { require(['@/views/access/access-index.vue'], resolve); } }
         ]
     },
     {
         path: '/error-page',
         icon: 'android-sad',
-        title: {i18n: 'title.errorDemo'},
+        meta:{
+            title: {i18n: 'title.errorDemo'}
+        },
         name: 'errorpage',
         component: Main,
         children: [
-            { path: 'index', access:2, title: {i18n: 'title.errorDemoIndex'}, name: 'errorpage_index', component: resolve => { require(['@/views/error-page/error-page.vue'], resolve); } },
+            { path: 'index', access:"error_page",  meta:{ title: {i18n: 'title.errorDemoIndex'} }, name: 'errorpage_index', component: resolve => { require(['@/views/error-page/error-page.vue'], resolve); } },
         ]
     }
 ];

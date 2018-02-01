@@ -10,12 +10,12 @@
                     <DropdownItem v-for="(item, index) in langList" :key="index" :name="item.name">
                         <Row type="flex" justify="center" align="middle" :gutter="16">
 
-                            <Col md="2">
+                            <Col :md="2">
                                 <span v-if="lang===item.name"><Icon :size="14" type="checkmark"/></span>
                                 <!--<span><Icon :size="14" type="checkmark"/></span>-->
                             </Col>
 
-                            <Col md="2">
+                            <Col :md="2">
                             <span>{{item.title}}</span>
                             </Col>
                         </Row>
@@ -28,6 +28,7 @@
 </template>
 
 <script>
+    import Util from '@/libs/util';
   export default {
     name: 'langSwitch',
     data () {
@@ -47,6 +48,7 @@
     methods: {
       setLang (lang) {
         this.$store.commit('switchLang',lang);
+          Util.setTitleLang(lang);
       }
     },
     computed: {

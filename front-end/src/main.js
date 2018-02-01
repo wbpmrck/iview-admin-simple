@@ -12,8 +12,29 @@ import util from '@/libs/util';
 Vue.use(VueI18n);
 Vue.use(iView);
 
+//全局混入一些辅助方法
+Vue.mixin({
+    computed: {
+        userInfo () {
+            return this.$store.state.user.userInfo;
+        }
+    },
+    methods: {
+        foo: function () {
+            console.log('foo')
+        }
+    }
+})
+
+
+// //todo:初始化默认的用户信息（这部分逻辑应该是从页面上读取服务器传入的用户信息）
+store.commit("login", user);
+
+// 设置默认语言
+store.commit('switchLang',Vue.config.lang);
 new Vue({
     el: '#app',
+    // mixins: [mixin],
     router: router,
     store: store,
     render: h => h(App),
@@ -22,13 +43,15 @@ new Vue({
     },
     mounted () {
         this.currentPageName = this.$route.name;
+
+
+
         // 显示打开的页面的列表
         this.$store.commit('setOpenedList');
-        this.$store.commit('initCachepage');
+        this.$store.commit('initCachePage');
         // 权限菜单过滤相关
-        this.$store.commit('updateMenulist');
-        // 设置默认语言
-        this.$store.commit('switchLang',Vue.config.lang);
+        // this.$store.commit('updateMenulist');
+        this.$store.dispatch('updateMenulist');
         // iview-admin检查更新
         // util.checkUpdate(this);
     },

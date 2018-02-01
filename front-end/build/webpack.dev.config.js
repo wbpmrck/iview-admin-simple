@@ -6,22 +6,28 @@ const merge = require('webpack-merge');
 const webpackBaseConfig = require('./webpack.base.config.js');
 const fs = require('fs');
 const package = require('../package.json');
+const path = require("path");
 
-fs.open('./build/env.js', 'w', function(err, fd) {
-    const buf = 'export default "development";';
-    fs.write(fd, buf, 0, buf.length, 0, function(err, written, buffer) {});
-});
+// fs.open('./build/env.js', 'w', function(err, fd) {
+//     const buf = 'module.exports="development";';
+//     fs.write(fd, buf, 0, buf.length, 0, function(err, written, buffer) {});
+// });
 
 module.exports = merge(webpackBaseConfig, {
-    devtool: '#source-map',
+    // devtool: '#source-map',
+    devtool: 'eval',
     output: {
-        publicPath: '/dist/',
-        filename: '[name].js',
-        chunkFilename: '[name].chunk.js'
+        path: path.resolve(__dirname,'../../back-end/app/static'),
+        publicPath: `/`,
+        filename: 'js/[name].js',
+        // chunkFilename: 'js/[name].chunk.js'
     },
     plugins: [
+        new webpack.DefinePlugin({
+            ENV: JSON.stringify("development")
+        }),
         new ExtractTextPlugin({
-            filename: '[name].css',
+            filename: 'css/[name].css',
             allChunks: true
         }),
         new webpack.optimize.CommonsChunkPlugin({
@@ -30,7 +36,7 @@ module.exports = merge(webpackBaseConfig, {
         }),
         new HtmlWebpackPlugin({
             title: 'iView admin v' + package.version,
-            filename: '../index.html',
+            filename: '../views/index.html',
             template: './src/template/index.ejs',
             inject: false
         }),

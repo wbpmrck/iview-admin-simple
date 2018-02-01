@@ -11,23 +11,27 @@ const fs = require('fs');
 const path = require('path');
 const package = require('../package.json');
 
-fs.open('./build/env.js', 'w', function(err, fd) {
-    const buf = 'export default "production";';
-    fs.write(fd, buf, 0, buf.length, 0, function(err, written, buffer) {});
-});
+// fs.open('./build/env.js', 'w', function(err, fd) {
+//     const buf = 'export default "production";';
+//     fs.write(fd, buf, 0, buf.length, 0, function(err, written, buffer) {});
+// });
 
 module.exports = merge(webpackBaseConfig, {
     output: {
-        publicPath: 'https://iview.github.io/iview-admin/dist/',  //todo: 修改 https://iv...admin 这部分为你的服务器域名
-        filename: '[name].[hash].js',
-        chunkFilename: '[name].[hash].chunk.js'
+        path: path.resolve(__dirname,'../dist'),
+        publicPath: 'http://admin.xunfei.cn/',  //todo: 修改 https://iv...admin 这部分为你的服务器域名
+        filename: 'js/[name].[chunkhash:6].js',
+        // chunkFilename: '[name].[hash].chunk.js'
     },
     plugins: [
+        new webpack.DefinePlugin({
+            ENV: JSON.stringify("production")
+        }),
         new cleanWebpackPlugin(['dist/*'], {
             root: path.resolve(__dirname, '../')
         }),
         new ExtractTextPlugin({
-            filename: '[name].[hash].css',
+            filename: 'css/[name].[chunkhash:6].css',
             allChunks: true
         }),
         new webpack.optimize.CommonsChunkPlugin({
@@ -36,11 +40,11 @@ module.exports = merge(webpackBaseConfig, {
             name: ['vender-exten', 'vender-base'],
             minChunks: Infinity
         }),
-        new webpack.DefinePlugin({
-            'process.env': {
-                NODE_ENV: '"production"'
-            }
-        }),
+        // new webpack.DefinePlugin({
+        //     'process.env': {
+        //         NODE_ENV: '"production"'
+        //     }
+        // }),
         new webpack.optimize.UglifyJsPlugin({
             compress: {
                 warnings: false
@@ -57,7 +61,7 @@ module.exports = merge(webpackBaseConfig, {
         // }),
         new CopyWebpackPlugin([
             {
-                from: 'td_icon.ico'
+                from: 'favicon.ico'
             },
             {
                 from: 'src/styles/fonts',
@@ -76,8 +80,8 @@ module.exports = merge(webpackBaseConfig, {
         }),
         new HtmlWebpackPlugin({
             title: 'iView admin v' + package.version,
-            favicon: './td_icon.ico',
-            filename: '../index.html',
+            favicon: './favicon.ico',
+            filename: 'index.html',
             template: './src/template/index.ejs',
             inject: false
         })

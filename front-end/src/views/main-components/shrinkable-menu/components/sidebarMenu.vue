@@ -19,8 +19,10 @@
                 </template>
                 <template v-for="child in item.children">
                     <MenuItem :name="child.name" :key="child.name">
-                        <Icon :type="child.icon" :size="iconSize" :key="child.name"></Icon>
-                        <span class="layout-text" :key="child.name">{{ itemTitle(child) }}</span>
+                        <!--<Icon :type="child.icon" :size="iconSize" :key="child.name"></Icon>-->
+                        <Icon :type="child.icon" :size="iconSize"></Icon>
+                        <!--<span class="layout-text" :key="child.name">{{ itemTitle(child) }}</span>-->
+                        <span class="layout-text">{{ itemTitle(child) }}</span>
                     </MenuItem>
                 </template>
             </Submenu>
@@ -47,10 +49,10 @@ export default {
             this.$emit('on-change', active);
         },
         itemTitle (item) {
-            if (typeof item.title === 'object') {
-                return this.$t(item.title.i18n);
+            if (typeof item.meta.title === 'object') {
+                return this.$t(item.meta.title.i18n);
             } else {
-                return item.title;
+                return item.meta.title;
             }
         }
     },

@@ -4,6 +4,7 @@ import Util from '../libs/util';
 import VueRouter from 'vue-router';
 import Cookies from 'js-cookie';
 import {routers, otherRouter, appRouter} from './router';
+import store from '../store';
 
 Vue.use(VueRouter);
 
@@ -17,7 +18,13 @@ export const router = new VueRouter(RouterConfig);
 
 router.beforeEach((to, from, next) => {
     iView.LoadingBar.start();
-    Util.title(to.meta.title);
+
+    let userInfo = store.getters.userInfo;
+    let lang = store.getters.lang;
+
+
+    Util.title(to.meta.title,lang);
+
     if (Cookies.get('locking') === '1' && to.name !== 'locking') { // 判断当前是否是锁定状态
         next({
             replace: true,
@@ -26,11 +33,13 @@ router.beforeEach((to, from, next) => {
     } else if (Cookies.get('locking') === '0' && to.name === 'locking') {
         next(false);
     } else {
-        if (!Cookies.get('user') && to.name !== 'login') { // 判断是否未登录且前往的页面不是登录页
+        // if (!Cookies.get('user') && to.name !== 'login') { // 判断是否未登录且前往的页面不是登录页
+        if ( (!userInfo || userInfo.id===undefined) && to.name !== 'login') { // 判断是否未登录且前往的页面不是登录页
             next({
                 name: 'login'
             });
-        } else if (Cookies.get('user') && to.name === 'login') { // 判断是否已经登录且前往的是登录页
+        // } else if (Cookies.get('user') && to.name === 'login') { // 判断是否已经登录且前往的是登录页
+        } else if (userInfo && userInfo.id!==undefined && to.name === 'login') { // 判断是否已经登录且前往的是登录页
             Util.title();
             next({
                 name: 'home_index'
@@ -38,7 +47,7 @@ router.beforeEach((to, from, next) => {
         } else {
             const curRouterObj = Util.getRouterObjByName([otherRouter, ...appRouter], to.name);
             // let accessCode = Cookies.getJSON('access');
-            let accessCode = Util.getAccessInfo();
+            let accessCode = userInfo?userInfo.access:undefined;
             if (curRouterObj && curRouterObj.access !== undefined) { // 需要判断权限的路由
                 // if (curRouterObj.access === parseInt(Cookies.get('access'))) {
                 if (Util.showThisRoute(curRouterObj.access, accessCode)) {

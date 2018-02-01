@@ -67,10 +67,10 @@ export default {
     },
     methods: {
         itemTitle (item) {
-            if (typeof item.title === 'object') {
-                return this.$t(item.title.i18n);
+            if (typeof item.meta.title === 'object') {
+                return this.$t(item.meta.title.i18n);
             } else {
-                return item.title;
+                return item.meta.title;
             }
         },
         closePage (event, name) {

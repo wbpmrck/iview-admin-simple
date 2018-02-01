@@ -5,7 +5,7 @@ import Vue from 'vue';
 
 const app = {
     state: {
-        cachePage: [],
+        cachePage: ['home'], //需要被keep-alive缓存的页面.首页因为是一直打开无法关闭的 所以可以被缓存
         lang: '',
         isFullScreen: false,
         openedSubmenuArr: [], // 要展开的菜单数组
@@ -33,6 +33,45 @@ const app = {
         messageCount: 0,
         dontCache: ['text-editor', 'artical-publish'] // 在这里定义你不想要缓存的页面的name属性值(参见路由配置router.js)
         // dontCache: [] // 在这里定义你不想要缓存的页面的name属性值(参见路由配置router.js)
+    },
+
+    getters: {
+        lang: state => {
+            return state.lang
+        }
+    },
+    actions:{
+        updateMenulist ({ state, commit, rootState }) {
+            // let accessCode = Util.getAccessInfo();
+            let accessCode = rootState.user.userInfo.access;
+            let menuList = [];
+            appRouter.forEach((item, index) => {
+
+                /*
+                    菜单逻辑说明：
+                    1、如果存在子菜单，此主菜单才显示
+                    2、子菜单可以配置access权限，如果主菜单里的子菜单权限都没有，则主菜单不展示
+                 */
+                if(item.children.length > 0){
+                    let childrenArr = [];
+                    childrenArr = item.children.filter(child => {
+                        if (child.access !== undefined) {
+                            if (Util.showThisRoute(child.access, accessCode)) {
+                                return child;
+                            }
+                        } else {
+                            return child;
+                        }
+                    });
+                    if(childrenArr.length > 0){
+                        let len = menuList.push(item);
+                        menuList[len - 1].children = childrenArr;
+                    }
+                }
+            });
+            // state.menuList = menuList;
+            commit('doUpdateMenulist',menuList);
+        },
     },
     mutations: {
         setTagsList (state, list) {
@@ -87,33 +126,9 @@ const app = {
         //     });
         //     state.menuList = menuList;
         // },
-        updateMenulist (state) {
-            let accessCode = Util.getAccessInfo();
-            let menuList = [];
-            appRouter.forEach((item, index) => {
-                
-                /*
-                    菜单逻辑说明：
-                    1、如果存在子菜单，此主菜单才显示
-                    2、子菜单可以配置access权限，如果主菜单里的子菜单权限都没有，则主菜单不展示
-                 */
-                if(item.children.length > 0){
-                  let childrenArr = [];
-                  childrenArr = item.children.filter(child => {
-                    if (child.access !== undefined) {
-                      if (Util.showThisRoute(child.access, accessCode)) {
-                        return child;
-                      }
-                    } else {
-                      return child;
-                    }
-                  });
-                  if(childrenArr.length > 0){
-                    let len = menuList.push(item);
-                    menuList[len - 1].children = childrenArr;
-                  }
-                }
-            });
+
+        doUpdateMenulist (state,menuList) {
+
             state.menuList = menuList;
         },
         changeMenuTheme (state, theme) {
@@ -142,7 +157,7 @@ const app = {
                 }
             });
         },
-        initCachepage (state) {
+        initCachePage (state) {
             if (localStorage.cachePage) {
                 state.cachePage = JSON.parse(localStorage.cachePage);
             }

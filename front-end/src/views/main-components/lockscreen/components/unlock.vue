@@ -28,6 +28,7 @@
 
 <script>
 import Cookies from 'js-cookie';
+import SHA1 from '@/libs/sha1';
 export default {
     name: 'Unlock',
     data () {
@@ -51,7 +52,18 @@ export default {
     },
     methods: {
         validator () {
-            return true; // 你可以在这里写密码验证方式，如发起ajax请求将用户输入的密码this.password与数据库用户密码对比
+            // 锁屏解锁的时候，需要验证用户输入的密码是否正确，这里直接使用客户端保存的加密串
+            let userInfo = this.$store.getters.userInfo;
+
+            //计算密码
+            let encoded = SHA1.encode(this.password+userInfo.salt);
+
+            if(encoded === userInfo.passwordSecret){
+                return true;
+            }else{
+                return false;
+            }
+
         },
         handleClickAvator () {
             this.avatorLeft = '-180px';

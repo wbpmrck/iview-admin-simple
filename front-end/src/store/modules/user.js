@@ -2,13 +2,36 @@ import Cookies from 'js-cookie';
 
 const user = {
     state: {
-        avatar:""
+        userInfo:{
+            id:undefined,
+            name:undefined,
+            passwordSecret: "",
+            salt: "",
+            role:[], //[2,3,4] 前端只保留角色id
+            access:[], //[ {id:1,name:'user.add'} ] 权限当是root用户的时候，是一个字符串 "__all__"
+            avatar:""
+        }
+    },
+    getters: {
+        userInfo: state => {
+            return state.userInfo
+        }
     },
     mutations: {
+        changeAccess:function (state, access) {
+            state.userInfo.access = access;
+        },
+        login:function (state, user) {
+            state.userInfo = user;
+        },
         logout (state, vm) {
-            Cookies.remove('user');
-            Cookies.remove('password');
-            Cookies.remove('access');
+
+            // Cookies.remove('user');
+            // Cookies.remove('password');
+            // Cookies.remove('access');
+
+            state.userInfo = undefined;
+
             // 恢复默认样式
             let themeLink = document.querySelector('link[name="theme"]');
             themeLink.setAttribute('href', '');

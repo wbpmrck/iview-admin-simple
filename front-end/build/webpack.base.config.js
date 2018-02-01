@@ -75,7 +75,14 @@ module.exports = {
             },
             {
                 test: /\.(gif|jpg|png|woff|svg|eot|ttf)\??.*$/,
-                loader: 'url-loader?limit=1024'
+                use: {
+                    loader: 'url-loader',
+                    options: {
+                        limit: 8192,
+                        name: 'assets/[name].[hash:7].[ext]'
+                    }
+                }
+                // loader: 'url-loader?limit=1024',
             },
             {
                 test: /\.(html|tpl)$/,

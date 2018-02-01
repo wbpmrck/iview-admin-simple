@@ -12,8 +12,8 @@
                 :open-names="openedSubmenuArr"
                 :menu-list="menuList">
                 <div slot="top" class="logo-con">
-                    <img v-show="!shrink"  src="../images/logo.jpg" key="max-logo" />
-                    <img v-show="shrink" src="../images/logo-min.jpg" key="min-logo" />
+                    <img v-show="!shrink"  src="../images/logo.png" key="max-logo" />
+                    <img v-show="shrink" src="../images/logo-min.png" key="min-logo" />
                 </div>
             </shrinkable-menu>
         </div>
@@ -26,7 +26,7 @@
                 </div>
                 <div class="header-middle-con">
                     <div class="main-breadcrumb">
-                        <breadcrumb-nav :currentPath="currentPath"></breadcrumb-nav>
+                        <!--<breadcrumb-nav :currentPath="currentPath"></breadcrumb-nav>-->
                     </div>
                 </div>
                 <div class="header-avator-con">
@@ -39,7 +39,7 @@
                         <Row type="flex" justify="end" align="middle" class="user-dropdown-innercon">
                             <Dropdown transfer trigger="click" @on-click="handleClickUserDropdown">
                                 <a href="javascript:void(0)">
-                                    <span class="main-user-name">{{ userName }}</span>
+                                    <span class="main-user-name">{{ userInfo.name }}</span>
                                     <Icon type="arrow-down-b"></Icon>
                                 </a>
                                 <DropdownMenu slot="list">
@@ -68,7 +68,7 @@
 <script>
     import shrinkableMenu from './main-components/shrinkable-menu/shrinkable-menu.vue';
     import tagsPageOpened from './main-components/tags-page-opened.vue';
-    import breadcrumbNav from './main-components/breadcrumb-nav.vue';
+//    import breadcrumbNav from './main-components/breadcrumb-nav.vue';
     import fullScreen from './main-components/fullscreen.vue';
     import lang from './main-components/lang.vue';
     import lockScreen from './main-components/lockscreen/lockscreen.vue';
@@ -81,7 +81,7 @@
         components: {
             shrinkableMenu,
             tagsPageOpened,
-            breadcrumbNav,
+//            breadcrumbNav,
             lang,
             fullScreen,
             lockScreen,
@@ -126,11 +126,12 @@
         methods: {
             init () {
                 let pathArr = util.setCurrentPath(this, this.$route.name);
-                this.$store.commit('updateMenulist');
+//                this.$store.commit('updateMenulist');
+                this.$store.dispatch('updateMenulist');
                 if (pathArr.length >= 2) {
                     this.$store.commit('addOpenSubmenu', pathArr[1].name);
                 }
-                this.userName = Cookies.get('user');
+//                this.userName = Cookies.get('user');
                 let messageCount = 3;
                 this.messageCount = messageCount.toString();
                 this.checkTag(this.$route.name);
