@@ -71,11 +71,44 @@ export default {
             tableColumns: [
                 {
                     title: 'ID',
+                    width: 110,
                     key: 'id'
                 },
                 {
                     title: '名称',
                     key: 'name'
+                },
+                {
+                    title: '是否启用',
+                    align: 'center',
+                    key: 'name',
+                    render: (h, {row, column, index}) => {
+
+                        let styleObject ={};
+                        if(row.enable){
+                            styleObject={
+                                type: 'checkmark-circled',
+                                color: 'green'
+                            }
+                        }else{
+
+                            styleObject={
+                                type: 'close-circled',
+                                color: 'red'
+                            }
+                        }
+
+                        return h('div', [
+                            h('Icon', {
+                                props: {
+                                    ...styleObject,
+                                    size:22,
+                                },
+                                style: {
+                                }
+                            })
+                        ]);
+                    }
                 },
                 {
                     title: '描述',
@@ -91,8 +124,33 @@ export default {
                 {
                     title: '修改时间',
                     key: 'update_time',
-                    render (_,{row, column, index}) {
+                    render (createElement,{row, column, index}) {
                         return dateUtil.format(new Date(row.update_time),'yyyy-MM-dd hh:mm:ss');
+                    }
+                },
+                {
+                    title: '操作',
+                    key: 'action',
+                    align: 'center',
+                    fixed: 'right',
+                    width: 110,
+                    render: (h, {row, column, index}) => {
+                        return h('div', [
+                            h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small'
+                                },
+                                style: {
+//                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: () => {
+                                        this.update(row)
+                                    }
+                                }
+                            }, '编辑')
+                        ]);
                     }
                 }
             ],
@@ -126,7 +184,19 @@ export default {
         },
         create:function () {
             this.$router.push({
-                name: 'access_create'
+                name: 'access_create',
+                params:{
+                    mode:'create'
+                }
+            });
+        },
+        update:function (accessInfo) {
+            this.$router.push({
+                name: 'access_update',
+                params:{
+                    mode:'update',
+                    data:accessInfo
+                }
             });
         },
         queryAccess : function(){

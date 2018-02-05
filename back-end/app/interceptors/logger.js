@@ -13,9 +13,11 @@ module.exports= async (ctx,next)=>{
     await next();
     // 再次进入 logger 中间件，记录2次通过此中间件「穿越」的时间
     var ms = new Date - start;
+
+    //todo:打印 Content-Type
     
     if(ctx.response.type==="application/json"){
-        logger.debug('[%s]%s %s [%s]- cost %s ms \r\n response[%s] data: %s', start,ctx.method, ctx.url,JSON.stringify(ctx.request.body), ms,ctx.response.status,JSON.stringify(ctx.response.body));
+        logger.debug('[%s]%s %s [%s] [%s]- cost %s ms \r\n response[%s] data: %s', start,ctx.method,ctx.request.req.headers['content-type'], ctx.url,JSON.stringify(ctx.request.body), ms,ctx.response.status,JSON.stringify(ctx.response.body));
         
     }else{
         logger.debug('[%s]%s %s [%s]- cost %s ms \r\n response[%s]', start,ctx.method, ctx.url,JSON.stringify(ctx.request.body), ms,ctx.response.status);

@@ -267,7 +267,7 @@ module.exports={
         // 参数简单检查
         const validateResult = await validate(name, 'name').notNull().notEmptyStr()
             .and(desc, 'desc').notNull().notEmptyStr()
-            .and(enable, 'enable').notNull().notEmptyStr().isOneOf(["0","1"])
+            .and(enable, 'enable').notNull().isOneOf([true,false])
             .and(name, 'name').notExistInTable("sys_access","name")
             .run();
 

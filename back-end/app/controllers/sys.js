@@ -111,7 +111,7 @@ map.set(
     ['POST', '/access/update'],
     async function (ctx, next) {
         const self = this;
-        try {n
+        try {
 
             const toUpdate = ctx.request.body;
             // 调用service获取返回数据

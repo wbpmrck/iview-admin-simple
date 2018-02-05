@@ -3,7 +3,7 @@ var config = require("../config/default");
 import axios from 'axios';
 
 axios.defaults.baseURL = config.dynamicDomain;
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+// axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 exports.get = function (url,data) {
     
