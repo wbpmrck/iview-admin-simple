@@ -47,7 +47,7 @@
             <div class="split"></div>
             <Row>
                 <Table stripe :columns="tableColumns" :data="tableData.data"></Table>
-
+                <Spin size="large" fix v-if="spinShow"></Spin>
             </Row>
         </Card>
     </div>
@@ -68,6 +68,7 @@ export default {
                 desc:"",
                 ...queryHelper.pageCondition
             },
+            spinShow:false,
             tableColumns: [
                 {
                     title: 'ID',
@@ -167,7 +168,7 @@ export default {
             // 通过 `vm` 访问组件实例
             console.log(from);
             //如果是从"新增"场景回到管理场景，则刷新
-            if(from.name==='access_create'){
+            if(from.name==='access_create' || from.name==='access_update'){
                 vm.queryAccess();
             }
         })
@@ -183,24 +184,22 @@ export default {
         },
         create:function () {
             this.$router.push({
-                name: 'access_create',
-                params:{
-                    mode:'create'
-                }
+                name: 'access_create'
             });
         },
         update:function (accessInfo) {
             this.$router.push({
                 name: 'access_update',
                 params:{
-                    mode:'update',
-                    data:accessInfo
+                    id:accessInfo.id
                 }
             });
         },
         queryAccess : function(){
             var self = this;
+            self.spinShow = true;
             accessService.query(this.condition).then(function (resp) {
+                self.spinShow = false;
                 if(resp && resp.success){
                     self.tableData.total= resp.data.total;
                     self.tableData.data = resp.data.data;
@@ -211,6 +210,7 @@ export default {
                     });
                 }
             }).catch(function(err){
+                self.spinShow = false;
                 self.$Notice.error({
                     title: '错误',
                     desc: err.message

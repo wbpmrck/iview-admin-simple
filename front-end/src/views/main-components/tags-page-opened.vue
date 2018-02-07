@@ -57,6 +57,12 @@ export default {
             }
         }
     },
+    created (){
+        var self = this;
+        this.bus.$on('close-page', function (pageName) {
+            self.closePage(null,pageName);
+        })
+    },
     computed: {
         title () {
             return this.$store.state.app.currentTitle;

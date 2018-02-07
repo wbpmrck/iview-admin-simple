@@ -12,8 +12,16 @@ import util from '@/libs/util';
 Vue.use(VueI18n);
 Vue.use(iView);
 
+let bus = new Vue();
+
 //全局混入一些辅助方法
 Vue.mixin({
+
+    data:function () {
+        return {
+            bus
+        }
+    },
     computed: {
         userInfo () {
             return this.$store.state.user.userInfo;

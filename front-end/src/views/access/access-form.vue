@@ -9,10 +9,11 @@
         <Card>
             <p slot="title">
                 <Icon type="android-add-circle"></Icon>
-                {{mode=='create'?'创建权限':'编辑权限'}}
+                {{mode=='access_create'?'创建权限':'编辑权限'}}
             </p>
 
             <Form ref="form" :model="form"  :rules="rule" label-position="right">
+                <Spin size="large" fix v-if="spinShow"></Spin>
                 <FormItem label="权限名称：" prop="name" :label-width="100">
                     <Input v-model="form.name" style="width: 300px"></Input>
                 </FormItem>
@@ -45,6 +46,7 @@
             return {
                 mode:"unknown", // 工作模式，默认未知、其他页面传入可选"create","update"
 
+                spinShow:false,
                 form:{
                     id:-1,
                     name:"",
@@ -67,25 +69,43 @@
         },
         beforeRouteEnter(to, from, next){
             next(vm=>{
-                vm.mode = to.params.mode;
-//                vm.name =`access_${vm.mode}`
-                if(to.params.data){
-                    vm.form = to.params.data;
-//                    vm.form.id = to.params.data.id;
-//                    vm.form.name = to.params.data.name;
-//                    vm.form.desc = to.params.data.desc;
-//                    vm.form.enable = to.params.data.enable;
+                vm.mode = to.name;
+                if(vm.mode=="access_update"&& to.params.id !== undefined){
+                    vm.form.id = to.params.id;
+                    vm.queryAccess();
                 }
-//                alert(JSON.stringify(to.params));
             })
         },
         methods: {
+            queryAccess : function(){
+                var self = this;
+                self.spinShow = true;
+                accessService.query({id:self.form.id}).then(function (resp) {
+                    self.spinShow = false;
+                    if(resp && resp.success){
+                        if(resp.data.data && resp.data.data.length>0){
+                            self.form = resp.data.data[0];
+                        }
+                    }else{
+                        self.$Notice.error({
+                            title: '错误',
+                            desc: resp.desc
+                        });
+                    }
+                }).catch(function(err){
+                    self.spinShow = false;
+                    self.$Notice.error({
+                        title: '错误',
+                        desc: err.message
+                    });
+                });
+            },
             handleSubmit (name) {
                 var self = this;
                 this.$refs[name].validate((valid) => {
                     if (valid) {
 
-                        if(self.mode ==='create'){
+                        if(self.mode ==='access_create'){
                             accessService.create(self.form).then(function (resp) {
                                 if(resp && resp.success){
                                     self.$Message.success({
@@ -101,7 +121,7 @@
                             }).catch(function(err){
                                 self.$Message.error('错误：'+err.message,9);
                             });
-                        }else if(self.mode == 'update'){
+                        }else if(self.mode == 'access_update'){
                             accessService.update(self.form).then(function (resp) {
                                 if(resp && resp.success){
                                     self.$Message.success({

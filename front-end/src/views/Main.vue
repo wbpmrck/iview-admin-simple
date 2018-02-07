@@ -59,7 +59,7 @@
         <div class="single-page-con" :style="{left: shrink?'60px':'200px'}">
             <div class="single-page">
                 <keep-alive :include="cachePage">
-                    <router-view></router-view>
+                    <router-view :key="$route.path"></router-view>
                 </keep-alive>
             </div>
         </div>

@@ -9,10 +9,11 @@
         <Card>
             <p slot="title">
                 <Icon type="android-add-circle"></Icon>
-                {{mode=='create'?'创建角色':'编辑角色'}}
+                {{mode=='role_create'?'创建角色':'编辑角色'}}
             </p>
 
             <Form ref="form" :model="form"  :rules="rule" label-position="right">
+                <Spin size="large" fix v-if="spinShow"></Spin>
                 <FormItem label="角色名称：" prop="name" :label-width="100">
                     <Input v-model="form.name" style="width: 300px"></Input>
                 </FormItem>
@@ -45,6 +46,7 @@
             return {
                 mode:"unknown", // 工作模式，默认未知、其他页面传入可选"create","update"
 
+                spinShow:false,
                 form:{
                     id:-1,
                     name:"",
@@ -65,54 +67,95 @@
         },
         computed: {
         },
+        created(){
+          console.log('create');
+        },
         beforeRouteEnter(to, from, next){
             next(vm=>{
-                vm.mode = to.params.mode;
-//                vm.name =`access_${vm.mode}`
-                if(to.params.data){
-                    vm.form = to.params.data;
+                vm.mode = to.name;
+                if(vm.mode=="role_update"&& to.params.id !== undefined){
+                    vm.form.id = to.params.id;
+                    vm.queryRole();
                 }
             })
         },
         methods: {
+
+            queryRole : function(){
+                var self = this;
+                self.spinShow = true;
+                roleService.query({id:self.form.id}).then(function (resp) {
+                    self.spinShow = false;
+                    if(resp && resp.success){
+                        if(resp.data.data && resp.data.data.length>0){
+                            self.form = resp.data.data[0];
+                        }
+                    }else{
+                        self.$Notice.error({
+                            title: '错误',
+                            desc: resp.desc
+                        });
+                    }
+                }).catch(function(err){
+                    self.spinShow = false;
+                    self.$Notice.error({
+                        title: '错误',
+                        desc: err.message
+                    });
+                });
+            },
             handleSubmit (name) {
                 var self = this;
                 this.$refs[name].validate((valid) => {
                     if (valid) {
 
-                        if(self.mode ==='create'){
+                        const loadingEnd = this.$Message.loading({
+                            top:60,
+                            content: '处理中...',
+                            duration: 0
+                        });
+                        if(self.mode ==='role_create'){
                             roleService.create(self.form).then(function (resp) {
+                                loadingEnd();
                                 if(resp && resp.success){
                                     self.$Message.success({
                                         content:'新增成功!',
                                         duration:1,
                                         onClose:()=>{
-                                            //跳转到上个页面
-                                            self.$router.go(-1);
+                                            //跳转
+                                            self.$router.replace({
+                                                name: 'role_index'
+                                            });
                                         }});
                                 }else{
                                     self.$Message.error('错误：'+resp.desc,9);
                                 }
                             }).catch(function(err){
+                                loadingEnd();
                                 self.$Message.error('错误：'+err.message,9);
                             });
-                        }else if(self.mode == 'update'){
+                        }else if(self.mode == 'role_update'){
                             roleService.update(self.form).then(function (resp) {
+                                loadingEnd();
                                 if(resp && resp.success){
                                     self.$Message.success({
                                         content:'修改成功!',
                                         duration:1,
                                         onClose:()=>{
-                                            //跳转到上个页面
-                                            self.$router.go(-1);
+                                            //跳转
+                                            self.$router.replace({
+                                                name: 'role_index'
+                                            });
                                         }});
                                 }else{
                                     self.$Message.error('错误：'+resp.desc,9);
                                 }
                             }).catch(function(err){
+                                loadingEnd();
                                 self.$Message.error('错误：'+err.message,9);
                             });
                         }else{
+                            loadingEnd();
                             self.$Message.error('错误的mode参数！');
                         }
 

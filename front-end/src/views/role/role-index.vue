@@ -45,7 +45,7 @@
             <div class="split"></div>
             <Row>
                 <Table stripe :columns="tableColumns" :data="tableData.data"></Table>
-
+                <Spin size="large" fix v-if="spinShow"></Spin>
             </Row>
         </Card>
     </div>
@@ -66,6 +66,7 @@ export default {
                 desc:"",
                 ...queryHelper.pageCondition
             },
+            spinShow:false,
             tableColumns: [
                 {
                     title: 'ID',
@@ -180,25 +181,23 @@ export default {
             this.queryRole();
         },
         create:function () {
-            this.$router.push({
-                name: 'role_create',
-                params:{
-                    mode:'create'
-                }
+            this.$router.replace({
+                name: 'role_create'
             });
         },
         update:function (roleInfo) {
-            this.$router.push({
+            this.$router.replace({
                 name: 'role_update',
                 params:{
-                    mode:'update',
-                    data:roleInfo
+                    id:roleInfo.id
                 }
             });
         },
         queryRole : function(){
             var self = this;
+            self.spinShow = true;
             roleService.query(this.condition).then(function (resp) {
+                self.spinShow = false;
                 if(resp && resp.success){
                     self.tableData.total= resp.data.total;
                     self.tableData.data = resp.data.data;
@@ -209,6 +208,7 @@ export default {
                     });
                 }
             }).catch(function(err){
+                self.spinShow = false;
                 self.$Notice.error({
                     title: '错误',
                     desc: err.message
