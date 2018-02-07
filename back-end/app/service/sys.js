@@ -293,22 +293,80 @@ module.exports={
         角色相关
      */
 
+
     /**
      * 查询角色列表
      * @param context
      * @param condition
+     * @param pageIndex
+     * @param pageSize
+     * @param needTotal
      * @returns {Promise.<*>}
      */
-    async queryRole(context,condition) {
+    async queryRole(context,condition,{pageIndex=1,pageSize=10,needTotal=0}) {
         queryHelper.removeEmptyCondition(condition);
 
         queryHelper.setLike(condition,"name");
         queryHelper.setLike(condition,"desc");
-        // 获取用户信息
-        const data = await models.sys_role.findAll({
-            where: condition
+
+        //准备返回对象
+        let ret ={
+            total:0,
+            data:[]
+        };
+
+        ret.data = await models.sys_role.findAll({
+            where:condition,
+            ...queryHelper.buildPageSQL({pageIndex,pageSize,needTotal})
         });
-        return resp.success({data: data});
+        if(needTotal) {
+            ret.total = await models.sys_role.count({
+                where:condition
+            });
+        }else{
+            delete ret.total
+        }
+        return resp.success({data: ret});
+    },
+
+    //todo:创建角色
+    async createRole(context, { name, desc ,enable }) {
+        // 参数简单检查
+        const validateResult = await validate(name, 'name').notNull().notEmptyStr()
+            .and(desc, 'desc').notNull().notEmptyStr()
+            .and(enable, 'enable').notNull().isOneOf([true,false])
+            .and(name, 'name').notExistInTable("sys_role","name")
+            .run();
+
+        // 如果验证通过
+        if (validateResult.pass) {
+            const created = await models.sys_role.create({
+                name,desc,enable
+            });
+
+            await created.reload();
+            if (created) {
+                return resp.success({ data: created});
+            }
+            return resp.failed({ desc: ',写入角色失败' });
+        }
+        return resp.failed({
+            code: resp.codes.PARAM_ILLEGAL,
+            desc: `${validateResult.desc}${validateResult.funcDesc}`
+        });
+    },
+    async updateRole(context,toUpdate) {
+        toUpdate.update_time = new Date();
+        let id = toUpdate.id;
+        delete toUpdate['id'];
+        // 获取用户信息
+        let updated = await models.sys_role.update(toUpdate,{
+            where:{
+                id:id
+            }
+        });
+        updated = updated.length>0?updated[0]:updated;//获取收到影响的行数，参考：http://docs.sequelizejs.com/class/lib/model.js~Model.html#static-method-update
+        return resp.success({data: updated});
     },
 
 }

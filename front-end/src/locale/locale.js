@@ -12,6 +12,14 @@ export default {
         'title.access.create': '创建权限',
         'title.access.update': '编辑权限',
         'title.access.demo': '权限演示(演示)',
+
+
+        'title.role': '角色管理',
+        'title.role.index': '角色管理',
+        'title.role.create': '创建角色',
+        'title.role.update': '编辑角色',
+
+
         'title.errorDemo': '错误页面(演示)',
         'title.errorDemoIndex': '错误页面一览',
         'title.locking': '锁屏',
@@ -44,6 +52,12 @@ export default {
         'title.access.create': 'Access Create',
         'title.access.update': 'Access Update',
         'title.access.demo': 'Access Demo(Demo)',
+
+        'title.role': 'Role Manage',
+        'title.role.index': 'Role Manage',
+        'title.role.create': 'Role Create',
+        'title.role.update': 'Role Update',
+
         'title.errorDemo': 'Error Page(Demo)',
         'title.errorDemoIndex': 'Page Demo',
         'title.locking': 'System Locking',

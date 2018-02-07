@@ -1,7 +1,7 @@
 <style lang="less">
     @import '../../styles/common.less';
 
-    #access-index .ivu-input-group-prepend{
+    #role-index .ivu-input-group-prepend{
         background-color: #fff;
         border:none;
     }
@@ -9,29 +9,27 @@
 </style>
 
 <template>
-    <div id="access-index">
+    <div id="role-index">
         <Card>
             <p slot="title">
                 <Icon type="ios-shuffle-strong"></Icon>
-                权限管理
+                角色管理
             </p>
 
             <Row>
                 <Col :span="10">
-                    <Input v-model="condition.name" placeholder="请输入权限名称" style="width: 250px" @on-enter="queryAccess">
-                        <span slot="prepend">权限名称:</span>
-                        <!--<Button slot="append" icon="ios-search" @click="queryAccess"></Button>-->
+                    <Input v-model="condition.name" placeholder="请输入角色名称" style="width: 250px" @on-enter="queryRole">
+                        <span slot="prepend">角色名称:</span>
                     </Input>
                 </Col>
 
                 <Col :span="10">
-                    <Input v-model="condition.desc" placeholder="请输入权限描述" style="width: 250px" @on-enter="queryAccess" >
-                        <span slot="prepend">权限描述:</span>
-                        <!--<Button slot="append" icon="ios-search" @click="queryAccess"></Button>-->
+                    <Input v-model="condition.desc" placeholder="请输入角色描述" style="width: 250px" @on-enter="queryRole" >
+                        <span slot="prepend">角色描述:</span>
                     </Input>
                 </Col>
                 <Col :span="4">
-                    <Button type="primary" icon="ios-search" @click="queryAccess">查询</Button>
+                    <Button type="primary" icon="ios-search" @click="queryRole">查询</Button>
                     <Button type="primary" icon="android-add-circle" @click="create">新增</Button>
 
                 </Col>
@@ -58,9 +56,9 @@ import Cookies from 'js-cookie';
 import Util from '@/libs/util';
 import dateUtil from '@/libs/date.js';
 import queryHelper from '@/libs/query-helper';
-import accessService from '@/services/access-service';
+import roleService from '@/services/role-service';
 export default {
-    name:"access_index",
+//    name:"access_index",
     data () {
         return {
             condition:{
@@ -167,40 +165,40 @@ export default {
             // 通过 `vm` 访问组件实例
             console.log(from);
             //如果是从"新增"场景回到管理场景，则刷新
-            if(from.name==='access_create'){
-                vm.queryAccess();
+            if(from.name==='role_create' || from.name==='role_update' ){
+                vm.queryRole();
             }
         })
     },
     methods: {
         pageChange:function (pageIndex) {
             this.condition.pageIndex = pageIndex;
-            this.queryAccess();
+            this.queryRole();
         },
         pageSizeChange:function (pageSize) {
             this.condition.pageSize = pageSize;
-            this.queryAccess();
+            this.queryRole();
         },
         create:function () {
             this.$router.push({
-                name: 'access_create',
+                name: 'role_create',
                 params:{
                     mode:'create'
                 }
             });
         },
-        update:function (accessInfo) {
+        update:function (roleInfo) {
             this.$router.push({
-                name: 'access_update',
+                name: 'role_update',
                 params:{
                     mode:'update',
-                    data:accessInfo
+                    data:roleInfo
                 }
             });
         },
-        queryAccess : function(){
+        queryRole : function(){
             var self = this;
-            accessService.query(this.condition).then(function (resp) {
+            roleService.query(this.condition).then(function (resp) {
                 if(resp && resp.success){
                     self.tableData.total= resp.data.total;
                     self.tableData.data = resp.data.data;

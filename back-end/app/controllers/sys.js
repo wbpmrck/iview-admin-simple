@@ -155,10 +155,10 @@ map.set(
     async function (ctx, next) {
         const self = this;
         try {
-            const conditon = ctx.request.query;
+            const { id,name,desc,pageIndex,pageSize,needTotal} = ctx.request.query;
             
             // 调用service获取返回数据
-            const result = await sysService.queryRole(ctx,conditon);
+            const result = await sysService.queryRole(ctx,{id,name,desc},{pageIndex,pageSize,needTotal});
             ctx.body = result;
         } catch (e) {
             resp.failed({ desc: e.stack || e.toString() }, ctx);
@@ -168,4 +168,45 @@ map.set(
         }
     }
 );
+
+map.set(
+    // 新增角色
+    ['POST', '/role/create'],
+    async function (ctx, next) {
+        const self = this;
+        try {
+
+            const toCreate = ctx.request.body;
+            // 调用service获取返回数据
+            const result = await sysService.createRole(ctx,toCreate);
+            ctx.body = result;
+        } catch (e) {
+            resp.failed({ desc: e.stack || e.toString() }, ctx);
+        } finally {
+            // 执行流程交给下一个middle-ware
+            await next();
+        }
+    }
+);
+map.set(
+    // 编辑角色
+    ['POST', '/role/update'],
+    async function (ctx, next) {
+        const self = this;
+        try {
+
+            const toUpdate = ctx.request.body;
+            // 调用service获取返回数据
+            const result = await sysService.updateRole(ctx,toUpdate);
+            ctx.body = result;
+        } catch (e) {
+            resp.failed({ desc: e.stack || e.toString() }, ctx);
+        } finally {
+            // 执行流程交给下一个middle-ware
+            await next();
+        }
+    }
+);
+
+
 module.exports = map;

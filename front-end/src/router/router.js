@@ -60,6 +60,8 @@ export const otherRouter = {
         { path: 'ownspace',  meta:{ title: {i18n: 'title.ownSpace'} }, name: 'ownspace_index', component: resolve => { require(['@/views/own-space/own-space.vue'], resolve); } },
         { path: 'access/create',  meta:{ title: {i18n: 'title.access.create'} }, name: 'access_create', component: resolve => { require(['@/views/access/access-form.vue'], resolve); } },
         { path: 'access/update',  meta:{ title: {i18n: 'title.access.update'} }, name: 'access_update', component: resolve => { require(['@/views/access/access-form.vue'], resolve); } },
+        { path: 'role/create',  meta:{ title: {i18n: 'title.role.create'} }, name: 'role_create', component: resolve => { require(['@/views/role/role-form.vue'], resolve); } },
+        { path: 'role/update',  meta:{ title: {i18n: 'title.role.update'} }, name: 'role_update', component: resolve => { require(['@/views/role/role-form.vue'], resolve); } },
     ]
 };
 
@@ -76,6 +78,18 @@ export const appRouter = [
         children: [
             { path: 'demo',  meta:{title: {i18n: 'title.access.demo'} },name: 'access_demo', component: resolve => { require(['@/views/access/access.vue'], resolve); } },
             { path: 'index',  meta:{title: {i18n: 'title.access.index'} },name: 'access_index', component: resolve => { require(['@/views/access/access-index.vue'], resolve); } }
+        ]
+    },
+    {
+        path: '/role',
+        icon: 'person-stalker',
+        name: 'role',
+        meta: {
+            title: {i18n: 'title.role'}
+        },
+        component: Main,
+        children: [
+            { path: 'index',  meta:{title: {i18n: 'title.role.index'} },name: 'role_index', component: resolve => { require(['@/views/role/role-index.vue'], resolve); } }
         ]
     },
     {

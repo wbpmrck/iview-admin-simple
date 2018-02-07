@@ -9,15 +9,15 @@
         <Card>
             <p slot="title">
                 <Icon type="android-add-circle"></Icon>
-                {{mode=='create'?'创建权限':'编辑权限'}}
+                {{mode=='create'?'创建角色':'编辑角色'}}
             </p>
 
             <Form ref="form" :model="form"  :rules="rule" label-position="right">
-                <FormItem label="权限名称：" prop="name" :label-width="100">
+                <FormItem label="角色名称：" prop="name" :label-width="100">
                     <Input v-model="form.name" style="width: 300px"></Input>
                 </FormItem>
 
-                <FormItem label="权限描述：" prop="desc" :label-width="100">
+                <FormItem label="角色描述：" prop="desc" :label-width="100">
                     <Input v-model="form.desc"  style="width: 300px"></Input>
                 </FormItem>
 
@@ -38,7 +38,7 @@
     import Util from '@/libs/util';
     import dateUtil from '@/libs/date.js';
     import queryHelper from '@/libs/query-helper';
-    import accessService from '@/services/access-service';
+    import roleService from '@/services/role-service';
     export default {
 //        name:"access_unknown",
         data () {
@@ -71,12 +71,7 @@
 //                vm.name =`access_${vm.mode}`
                 if(to.params.data){
                     vm.form = to.params.data;
-//                    vm.form.id = to.params.data.id;
-//                    vm.form.name = to.params.data.name;
-//                    vm.form.desc = to.params.data.desc;
-//                    vm.form.enable = to.params.data.enable;
                 }
-//                alert(JSON.stringify(to.params));
             })
         },
         methods: {
@@ -86,7 +81,7 @@
                     if (valid) {
 
                         if(self.mode ==='create'){
-                            accessService.create(self.form).then(function (resp) {
+                            roleService.create(self.form).then(function (resp) {
                                 if(resp && resp.success){
                                     self.$Message.success({
                                         content:'新增成功!',
@@ -102,7 +97,7 @@
                                 self.$Message.error('错误：'+err.message,9);
                             });
                         }else if(self.mode == 'update'){
-                            accessService.update(self.form).then(function (resp) {
+                            roleService.update(self.form).then(function (resp) {
                                 if(resp && resp.success){
                                     self.$Message.success({
                                         content:'修改成功!',
