@@ -209,6 +209,39 @@ module.exports={
         });
     },
 
+    /**
+     * 查询所有可用的用户信息，以及角色下的用户信息
+     * @param context
+     * @param roleId
+     * @returns {Promise.<*>}
+     */
+    async queryAllUserAndRoleUser(context, { roleId }) {
+        // 参数简单检查
+        const validateResult = await validate(roleId, 'roleId').notNull().existInTable("sys_role","id")
+            .run();
+
+        // 如果验证通过
+        if (validateResult.pass) {
+
+            // 获取用户信息
+            let userInfo = await db.query(`
+                select A.id,A.account_name,B.role_id as roleId
+
+                from sys_account A LEFT OUTER join sys_account_role B on A.id = B.account_id and B.role_id = :roleId
+            `,
+                {
+                    replacements: { roleId:roleId},
+                    type: db.QueryTypes.SELECT
+                }
+            );
+
+            return resp.success({ data: userInfo });
+        }
+        return resp.failed({
+            code: resp.codes.PARAM_ILLEGAL,
+            desc: `${validateResult.desc}${validateResult.funcDesc}`
+        });
+    },
     /*
         权限相关
      */
@@ -367,6 +400,76 @@ module.exports={
         });
         updated = updated.length>0?updated[0]:updated;//获取收到影响的行数，参考：http://docs.sequelizejs.com/class/lib/model.js~Model.html#static-method-update
         return resp.success({data: updated});
+    },
+
+    /**
+     * 从某个角色中，移除某些用户id
+     * @param context
+     * @param roleId：角色id
+     * @param userIds: 用户id列表，如[1,2,3]
+     * @returns {Promise.<*>}
+     */
+    async removeRoleUser(context,{roleId,userIds}) {
+        // 参数简单检查
+        const validateResult = await validate(roleId, 'roleId').notNull().positiveInt()
+            .run();
+
+        // 进行操作
+        if (validateResult.pass) {
+
+            // 获取用户信息
+            let [results, metadata] = await db.query(`
+                delete from sys_account_role
+                where role_id =:roleId
+                and account_id in (:accountIds)
+
+            `,
+                {
+                    replacements: { roleId:roleId,accountIds:userIds},
+                    // type: db.QueryTypes.DELETE
+                }
+            );
+
+            //返回删除的个数
+            return resp.success({ data:results.affectedRows});
+        }
+        return resp.failed({
+            code: resp.codes.PARAM_ILLEGAL,
+            desc: `${validateResult.desc}${validateResult.funcDesc}`
+        });
+    },
+    async addRoleUser(context,{roleId,userIds}) {
+        // 参数简单检查
+        const validateResult = await validate(roleId, 'roleId').notNull().positiveInt()
+            .existInTable("sys_role","id")
+            .run();
+
+        // 如果验证通过
+        if (validateResult.pass) {
+
+            let records =userIds.map((accountId)=>{
+                return '('+[accountId,roleId].join(',')+')'
+            });
+            records = records.join(',');
+
+            // 进行操作
+            let [results, metadata] = await db.query(`
+                insert into  sys_account_role (account_id,role_id)
+                values ${records}
+
+            `,
+                {
+                    // replacements: { records:records},
+                    type: db.QueryTypes.INSERT
+                }
+            );
+            //返回删除的个数
+            return resp.success({ data:metadata});
+        }
+        return resp.failed({
+            code: resp.codes.PARAM_ILLEGAL,
+            desc: `${validateResult.desc}${validateResult.funcDesc}`
+        });
     },
 
 }

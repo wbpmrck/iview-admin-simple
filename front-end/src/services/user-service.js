@@ -10,6 +10,12 @@ exports.login=function ({accountName,password}) {
     {accountName,password}
   )
 };
+exports.queryAllAndRoleUser=function ({roleId}) {
+  return ajaxHelper.get(
+    `/user/queryAllAndRoleUser`,
+    {roleId}
+  )
+};
 
 //
 // /**

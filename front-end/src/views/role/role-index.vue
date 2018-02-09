@@ -12,7 +12,7 @@
     <div id="role-index">
         <Card>
             <p slot="title">
-                <Icon type="ios-shuffle-strong"></Icon>
+                <Icon type="person-stalker"></Icon>
                 角色管理
             </p>
 
@@ -48,6 +48,12 @@
                 <Spin size="large" fix v-if="spinShow"></Spin>
             </Row>
         </Card>
+        <Modal v-model="isEditRoleUser" :mask-closable="false"	 class-name="vertical-center-modal" :styles="{width:'auto'}">
+            <role-user-edit :role-id="roleIdToEditUser"></role-user-edit>
+            <div slot="footer">
+                <Button type="success" size="large" long @click="finishEditRoleUser">完成编辑</Button>
+            </div>
+        </Modal>
     </div>
 </template>
 
@@ -57,8 +63,12 @@ import Util from '@/libs/util';
 import dateUtil from '@/libs/date.js';
 import queryHelper from '@/libs/query-helper';
 import roleService from '@/services/role-service';
+import roleUserEdit from '../../components/role-user-edit/role-user-edit.vue';
 export default {
 //    name:"access_index",
+    components: {
+        roleUserEdit
+    },
     data () {
         return {
             condition:{
@@ -66,6 +76,8 @@ export default {
                 desc:"",
                 ...queryHelper.pageCondition
             },
+            isEditRoleUser:false, //是否正在编辑角色对应的用户
+            roleIdToEditUser:-1, //要编辑角色下用户的角色id
             spinShow:false,
             tableColumns: [
                 {
@@ -131,7 +143,7 @@ export default {
                     key: 'action',
                     align: 'center',
                     fixed: 'right',
-                    width: 110,
+                    width: 160,
                     render: (h, {row, column, index}) => {
                         return h('div', [
                             h('Button', {
@@ -147,7 +159,21 @@ export default {
                                         this.update(row)
                                     }
                                 }
-                            }, '编辑')
+                            }, '编辑'),
+                            h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small'
+                                },
+                                style: {
+                                    marginLeft:"20px"
+                                },
+                                on: {
+                                    click: () => {
+                                        this.editRoleUser(row)
+                                    }
+                                }
+                            }, '角色用户')
                         ]);
                     }
                 }
@@ -184,6 +210,14 @@ export default {
             this.$router.replace({
                 name: 'role_create'
             });
+        },
+        editRoleUser:function (row) {
+            this.roleIdToEditUser = row.id;
+            this.isEditRoleUser = true;
+        },
+        finishEditRoleUser:function (row) {
+            this.roleIdToEditUser = -1;
+            this.isEditRoleUser = false;
         },
         update:function (roleInfo) {
             this.$router.replace({

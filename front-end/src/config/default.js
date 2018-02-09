@@ -6,7 +6,6 @@ var env = ENV;
 
 let root_user_access = "__all__"; //表示系统根用户的权限标识。具备此权限标识的用户，不受任何权限约束
 
-let cachedRoutes= ['home'];  //需要缓存的页面路由名称
 
 //和运行环境相关的配置
 let appConfigs={

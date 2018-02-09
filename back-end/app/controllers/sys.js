@@ -6,6 +6,9 @@ const sysService = require('../service/sys');
 
 const map = new Map();
 
+/* ======================================================
+    用户相关
+ ======================================================*/
 
 map.set(
     // 用户注册，参数：用户名、密码
@@ -82,9 +85,30 @@ map.set(
     }
 );
 
-/*
+
+map.set(
+    // 查询权限
+    ['GET', '/user/queryAllAndRoleUser'],
+    async function (ctx, next) {
+        const self = this;
+        try {
+            const { roleId} = ctx.request.query;
+
+            // 调用service获取返回数据
+            const result = await sysService.queryAllUserAndRoleUser(ctx,{roleId});
+            ctx.body = result;
+        } catch (e) {
+            resp.failed({ desc: e.stack || e.toString() }, ctx);
+        } finally {
+            // 执行流程交给下一个middle-ware
+            await next();
+        }
+    }
+);
+
+/* ======================================================
     权限相关
- */
+====================================================== */
 
 map.set(
     // 查询权限
@@ -146,9 +170,9 @@ map.set(
 );
 
 
-/*
+/* ======================================================
     角色相关
- */
+ ====================================================== */
 map.set(
     // 查询角色信息
     ['GET', '/role/query'],
@@ -198,6 +222,47 @@ map.set(
             const toUpdate = ctx.request.body;
             // 调用service获取返回数据
             const result = await sysService.updateRole(ctx,toUpdate);
+            ctx.body = result;
+        } catch (e) {
+            resp.failed({ desc: e.stack || e.toString() }, ctx);
+        } finally {
+            // 执行流程交给下一个middle-ware
+            await next();
+        }
+    }
+);
+
+map.set(
+    // 从角色中移除N个用户
+    ['POST', '/role/removeUser'],
+    async function (ctx, next) {
+        const self = this;
+        try {
+
+            //获取从哪个角色、移除哪几个用户（id数组）
+            const {roleId,userIds} = ctx.request.body;
+            // 调用service获取返回数据
+            const result = await sysService.removeRoleUser(ctx,{roleId,userIds});
+            ctx.body = result;
+        } catch (e) {
+            resp.failed({ desc: e.stack || e.toString() }, ctx);
+        } finally {
+            // 执行流程交给下一个middle-ware
+            await next();
+        }
+    }
+);
+map.set(
+    // 新增N个用户到角色中
+    ['POST', '/role/addUser'],
+    async function (ctx, next) {
+        const self = this;
+        try {
+
+            //获取从哪个角色、移除哪几个用户（id数组）
+            const {roleId,userIds} = ctx.request.body;
+            // 调用service获取返回数据
+            const result = await sysService.addRoleUser(ctx,{roleId,userIds});
             ctx.body = result;
         } catch (e) {
             resp.failed({ desc: e.stack || e.toString() }, ctx);

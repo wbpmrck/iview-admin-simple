@@ -8,7 +8,8 @@
     <div id="access-index">
         <Card>
             <p slot="title">
-                <Icon type="android-add-circle"></Icon>
+                <Icon v-if="mode=='role_create'" type="android-add-circle"></Icon>
+                <Icon v-if="mode=='role_update'" type="edit"></Icon>
                 {{mode=='role_create'?'创建角色':'编辑角色'}}
             </p>
 

@@ -8,7 +8,8 @@
     <div id="access-index">
         <Card>
             <p slot="title">
-                <Icon type="android-add-circle"></Icon>
+                <Icon v-if="mode=='access_create'" type="android-add-circle"></Icon>
+                <Icon v-if="mode=='access_update'" type="edit"></Icon>
                 {{mode=='access_create'?'创建权限':'编辑权限'}}
             </p>
 
