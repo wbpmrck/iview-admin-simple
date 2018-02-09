@@ -131,6 +131,25 @@ map.set(
     }
 );
 map.set(
+    // 查询权限列表以及是否在对应角色里
+    ['GET', '/access/queryAllAndRoleAccess'],
+    async function (ctx, next) {
+        const self = this;
+        try {
+            const { roleId} = ctx.request.query;
+
+            // 调用service获取返回数据
+            const result = await sysService.queryAllAccessAndRoleAccess(ctx,{roleId});
+            ctx.body = result;
+        } catch (e) {
+            resp.failed({ desc: e.stack || e.toString() }, ctx);
+        } finally {
+            // 执行流程交给下一个middle-ware
+            await next();
+        }
+    }
+);
+map.set(
     // 修改权限
     ['POST', '/access/update'],
     async function (ctx, next) {
@@ -263,6 +282,48 @@ map.set(
             const {roleId,userIds} = ctx.request.body;
             // 调用service获取返回数据
             const result = await sysService.addRoleUser(ctx,{roleId,userIds});
+            ctx.body = result;
+        } catch (e) {
+            resp.failed({ desc: e.stack || e.toString() }, ctx);
+        } finally {
+            // 执行流程交给下一个middle-ware
+            await next();
+        }
+    }
+);
+
+
+map.set(
+    // 从角色中移除N个权限
+    ['POST', '/role/removeAccess'],
+    async function (ctx, next) {
+        const self = this;
+        try {
+
+            //获取从哪个角色、移除哪几个权限（id数组）
+            const {roleId,accessIds} = ctx.request.body;
+            // 调用service获取返回数据
+            const result = await sysService.removeRoleAccess(ctx,{roleId,accessIds});
+            ctx.body = result;
+        } catch (e) {
+            resp.failed({ desc: e.stack || e.toString() }, ctx);
+        } finally {
+            // 执行流程交给下一个middle-ware
+            await next();
+        }
+    }
+);
+map.set(
+    // 新增N个权限到角色中
+    ['POST', '/role/addAccess'],
+    async function (ctx, next) {
+        const self = this;
+        try {
+
+            //获取从哪个角色、移除哪几个权限（id数组）
+            const {roleId,accessIds} = ctx.request.body;
+            // 调用service获取返回数据
+            const result = await sysService.addRoleAccess(ctx,{roleId,accessIds});
             ctx.body = result;
         } catch (e) {
             resp.failed({ desc: e.stack || e.toString() }, ctx);

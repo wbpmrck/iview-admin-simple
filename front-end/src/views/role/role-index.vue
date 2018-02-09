@@ -54,6 +54,12 @@
                 <Button type="success" size="large" long @click="finishEditRoleUser">完成编辑</Button>
             </div>
         </Modal>
+        <Modal v-model="isEditRoleAccess" :mask-closable="false"	 class-name="vertical-center-modal" :styles="{width:'auto'}">
+            <role-access-edit :role-id="roleIdToEditAccess"></role-access-edit>
+            <div slot="footer">
+                <Button type="success" size="large" long @click="finishEditRoleAccess">完成编辑</Button>
+            </div>
+        </Modal>
     </div>
 </template>
 
@@ -64,10 +70,12 @@ import dateUtil from '@/libs/date.js';
 import queryHelper from '@/libs/query-helper';
 import roleService from '@/services/role-service';
 import roleUserEdit from '../../components/role-user-edit/role-user-edit.vue';
+import roleAccessEdit from '../../components/role-access-edit/role-access-edit.vue';
 export default {
 //    name:"access_index",
     components: {
-        roleUserEdit
+        roleUserEdit,
+        roleAccessEdit,
     },
     data () {
         return {
@@ -78,6 +86,8 @@ export default {
             },
             isEditRoleUser:false, //是否正在编辑角色对应的用户
             roleIdToEditUser:-1, //要编辑角色下用户的角色id
+            isEditRoleAccess:false, //是否正在编辑角色对应的权限
+            roleIdToEditAccess:-1, //要编辑角色下权限的角色id
             spinShow:false,
             tableColumns: [
                 {
@@ -143,7 +153,7 @@ export default {
                     key: 'action',
                     align: 'center',
                     fixed: 'right',
-                    width: 160,
+                    width: 250,
                     render: (h, {row, column, index}) => {
                         return h('div', [
                             h('Button', {
@@ -173,7 +183,21 @@ export default {
                                         this.editRoleUser(row)
                                     }
                                 }
-                            }, '角色用户')
+                            }, '角色用户'),
+                            h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small'
+                                },
+                                style: {
+                                    marginLeft:"20px"
+                                },
+                                on: {
+                                    click: () => {
+                                        this.editRoleAccess(row)
+                                    }
+                                }
+                            }, '角色权限')
                         ]);
                     }
                 }
@@ -214,6 +238,14 @@ export default {
         editRoleUser:function (row) {
             this.roleIdToEditUser = row.id;
             this.isEditRoleUser = true;
+        },
+        editRoleAccess:function (row) {
+            this.roleIdToEditAccess = row.id;
+            this.isEditRoleAccess = true;
+        },
+        finishEditRoleAccess:function (row) {
+            this.roleIdToEditAccess = -1;
+            this.isEditRoleAccess = false;
         },
         finishEditRoleUser:function (row) {
             this.roleIdToEditUser = -1;

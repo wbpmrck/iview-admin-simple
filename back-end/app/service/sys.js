@@ -242,6 +242,40 @@ module.exports={
             desc: `${validateResult.desc}${validateResult.funcDesc}`
         });
     },
+    /**
+     * 查询所有权限信息，以及角色下的权限信息
+     * @param context
+     * @param roleId
+     * @returns {Promise.<*>}
+     */
+    async queryAllAccessAndRoleAccess(context, { roleId }) {
+        // 参数简单检查
+        const validateResult = await validate(roleId, 'roleId').notNull().existInTable("sys_role","id")
+            .run();
+
+        // 如果验证通过
+        if (validateResult.pass) {
+
+            // 获取权限信息
+            let result = await db.query(`
+                select A.id,A.\`name\`,A.desc,B.role_id as roleId
+
+                from sys_access A LEFT OUTER join sys_role_access B 
+                on A.id = B.access_id and B.role_id =  :roleId
+            `,
+                {
+                    replacements: { roleId:roleId},
+                    type: db.QueryTypes.SELECT
+                }
+            );
+
+            return resp.success({ data: result });
+        }
+        return resp.failed({
+            code: resp.codes.PARAM_ILLEGAL,
+            desc: `${validateResult.desc}${validateResult.funcDesc}`
+        });
+    },
     /*
         权限相关
      */
@@ -438,6 +472,49 @@ module.exports={
             desc: `${validateResult.desc}${validateResult.funcDesc}`
         });
     },
+    /**
+     * 移除角色里的权限
+     * @param context
+     * @param roleId
+     * @param accessIds
+     * @returns {Promise.<*>}
+     */
+    async removeRoleAccess(context,{roleId,accessIds}) {
+        // 参数简单检查
+        const validateResult = await validate(roleId, 'roleId').notNull().positiveInt()
+            .run();
+
+        // 进行操作
+        if (validateResult.pass) {
+
+            // 获取用户信息
+            let [results, metadata] = await db.query(`
+                delete from sys_role_access
+                where role_id =:roleId
+                and access_id in (:accessIds)
+
+            `,
+                {
+                    replacements: { roleId:roleId,accessIds:accessIds},
+                    // type: db.QueryTypes.DELETE
+                }
+            );
+
+            //返回删除的个数
+            return resp.success({ data:results.affectedRows});
+        }
+        return resp.failed({
+            code: resp.codes.PARAM_ILLEGAL,
+            desc: `${validateResult.desc}${validateResult.funcDesc}`
+        });
+    },
+    /**
+     * 添加角色里的用户
+     * @param context
+     * @param roleId
+     * @param userIds
+     * @returns {Promise.<*>}
+     */
     async addRoleUser(context,{roleId,userIds}) {
         // 参数简单检查
         const validateResult = await validate(roleId, 'roleId').notNull().positiveInt()
@@ -455,6 +532,46 @@ module.exports={
             // 进行操作
             let [results, metadata] = await db.query(`
                 insert into  sys_account_role (account_id,role_id)
+                values ${records}
+
+            `,
+                {
+                    // replacements: { records:records},
+                    type: db.QueryTypes.INSERT
+                }
+            );
+            //返回删除的个数
+            return resp.success({ data:metadata});
+        }
+        return resp.failed({
+            code: resp.codes.PARAM_ILLEGAL,
+            desc: `${validateResult.desc}${validateResult.funcDesc}`
+        });
+    },
+    /**
+     * 添加角色里的权限
+     * @param context
+     * @param roleId
+     * @param accessIds
+     * @returns {Promise.<*>}
+     */
+    async addRoleAccess(context,{roleId,accessIds}) {
+        // 参数简单检查
+        const validateResult = await validate(roleId, 'roleId').notNull().positiveInt()
+            .existInTable("sys_role","id")
+            .run();
+
+        // 如果验证通过
+        if (validateResult.pass) {
+
+            let records =accessIds.map((accessId)=>{
+                return '('+[accessId,roleId].join(',')+')'
+            });
+            records = records.join(',');
+
+            // 进行操作
+            let [results, metadata] = await db.query(`
+                insert into  sys_role_access (access_id,role_id)
                 values ${records}
 
             `,

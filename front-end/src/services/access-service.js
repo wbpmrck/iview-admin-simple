@@ -20,4 +20,11 @@ exports.update=function ( {id, name, desc ,enable }) {
   )
 };
 
+exports.queryAllAndRoleAccess=function ({roleId}) {
+    return ajaxHelper.get(
+        `/access/queryAllAndRoleAccess`,
+        {roleId}
+    )
+};
+
     

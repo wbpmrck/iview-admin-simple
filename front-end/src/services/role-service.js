@@ -33,6 +33,12 @@ exports.removeUser=function ( {roleId,userIds}) {
       {roleId,userIds}
   )
 };
+exports.removeAccess=function ( {roleId,accessIds}) {
+  return ajaxHelper.post(
+    `/role/removeAccess`,
+      {roleId,accessIds}
+  )
+};
 
 
 /**
@@ -45,6 +51,13 @@ exports.addUser=function ( {roleId,userIds}) {
   return ajaxHelper.post(
     `/role/addUser`,
       {roleId,userIds}
+  )
+};
+
+exports.addAccess=function ( {roleId,accessIds}) {
+  return ajaxHelper.post(
+    `/role/addAccess`,
+      {roleId,accessIds}
   )
 };
 
