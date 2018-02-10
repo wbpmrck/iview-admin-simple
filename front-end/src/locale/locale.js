@@ -6,6 +6,7 @@ export default {
         'title.403': '没有权限',
         'title.404': '页面不存在',
         'title.500': '出现错误',
+        'title.system': '系统设置',
         'title.ownSpace': '用户中心',
         'title.access': '权限管理',
         'title.access.index': '权限管理',
@@ -46,6 +47,8 @@ export default {
         'title.403': 'No Access To The Page',
         'title.404': 'Not Found',
         'title.500': 'Error',
+
+        'title.system': 'System Setting',
         'title.ownSpace': 'User Center',
         'title.access': 'Access Control',
         'title.access.index': 'Access Manage',

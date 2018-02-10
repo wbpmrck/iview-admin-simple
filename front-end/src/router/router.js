@@ -68,30 +68,59 @@ export const otherRouter = {
 // 作为Main组件的子页面展示并且在左侧菜单显示的路由写在appRouter里
 export const appRouter = [
     {
-        path: '/access',
+        path: '/system',
         icon: 'key',
         name: 'access',
         meta: {
-            title: {i18n: 'title.access'}
+            title: {i18n: 'title.system'}
         },
         component: Main,
         children: [
-            { path: 'demo',  meta:{title: {i18n: 'title.access.demo'} },name: 'access_demo', component: resolve => { require(['@/views/access/access.vue'], resolve); } },
-            { path: 'index',  meta:{title: {i18n: 'title.access.index'} },name: 'access_index', component: resolve => { require(['@/views/access/access-index.vue'], resolve); } }
+            { path: 'access/demo',  meta:{title: {i18n: 'title.access.demo'} },name: 'access_demo', component: resolve => { require(['@/views/access/access.vue'], resolve); } },
+            { path: 'access/index',  meta:{title: {i18n: 'title.access.index'} },name: 'access_index', component: resolve => { require(['@/views/access/access-index.vue'], resolve); } },
+            { path: 'role/index',  meta:{title: {i18n: 'title.role.index'} },name: 'role_index', component: resolve => { require(['@/views/role/role-index.vue'], resolve); } }
         ]
     },
-    {
-        path: '/role',
-        icon: 'person-stalker',
-        name: 'role',
-        meta: {
-            title: {i18n: 'title.role'}
-        },
-        component: Main,
-        children: [
-            { path: 'index',  meta:{title: {i18n: 'title.role.index'} },name: 'role_index', component: resolve => { require(['@/views/role/role-index.vue'], resolve); } }
-        ]
-    },
+    // {
+    //     path: '/role',
+    //     icon: 'person-stalker',
+    //     name: 'role',
+    //     meta: {
+    //         title: {i18n: 'title.role'}
+    //     },
+    //     component: Main,
+    //     children: [
+    //         { path: 'index',  meta:{title: {i18n: 'title.role.index'} },name: 'role_index', component: resolve => { require(['@/views/role/role-index.vue'], resolve); } }
+    //     ]
+    // },
+
+
+
+    // {
+    //     path: '/access',
+    //     icon: 'key',
+    //     name: 'access',
+    //     meta: {
+    //         title: {i18n: 'title.access'}
+    //     },
+    //     component: Main,
+    //     children: [
+    //         { path: 'demo',  meta:{title: {i18n: 'title.access.demo'} },name: 'access_demo', component: resolve => { require(['@/views/access/access.vue'], resolve); } },
+    //         { path: 'index',  meta:{title: {i18n: 'title.access.index'} },name: 'access_index', component: resolve => { require(['@/views/access/access-index.vue'], resolve); } }
+    //     ]
+    // },
+    // {
+    //     path: '/role',
+    //     icon: 'person-stalker',
+    //     name: 'role',
+    //     meta: {
+    //         title: {i18n: 'title.role'}
+    //     },
+    //     component: Main,
+    //     children: [
+    //         { path: 'index',  meta:{title: {i18n: 'title.role.index'} },name: 'role_index', component: resolve => { require(['@/views/role/role-index.vue'], resolve); } }
+    //     ]
+    // },
     {
         path: '/error-page',
         icon: 'android-sad',
