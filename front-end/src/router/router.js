@@ -58,6 +58,7 @@ export const otherRouter = {
     children: [
         { path: 'home',  meta: {title: {i18n: 'title.home'} }, name: 'home_index', component: resolve => { require(['@/views/home/home.vue'], resolve); } },
         { path: 'ownspace',  meta:{ title: {i18n: 'title.ownSpace'} }, name: 'ownspace_index', component: resolve => { require(['@/views/own-space/own-space.vue'], resolve); } },
+        { path: 'account/create',  meta:{ title: {i18n: 'title.account.create'} }, name: 'account_create', component: resolve => { require(['@/views/account/account-form.vue'], resolve); } },
         { path: 'access/create',  meta:{ title: {i18n: 'title.access.create'} }, name: 'access_create', component: resolve => { require(['@/views/access/access-form.vue'], resolve); } },
         { path: 'access/update/:id',  meta:{ title: {i18n: 'title.access.update'} }, name: 'access_update', component: resolve => { require(['@/views/access/access-form.vue'], resolve); } },
         { path: 'role/create',  meta:{ title: {i18n: 'title.role.create'} }, name: 'role_create', component: resolve => { require(['@/views/role/role-form.vue'], resolve); } },
@@ -78,19 +79,20 @@ export const appRouter = [
         children: [
             { path: 'access/demo',  meta:{title: {i18n: 'title.access.demo'} },name: 'access_demo', component: resolve => { require(['@/views/access/access.vue'], resolve); } },
             { path: 'access/index',  meta:{title: {i18n: 'title.access.index'} },name: 'access_index', component: resolve => { require(['@/views/access/access-index.vue'], resolve); } },
-            { path: 'role/index',  meta:{title: {i18n: 'title.role.index'} },name: 'role_index', component: resolve => { require(['@/views/role/role-index.vue'], resolve); } }
+            { path: 'role/index',  meta:{title: {i18n: 'title.role.index'} },name: 'role_index', component: resolve => { require(['@/views/role/role-index.vue'], resolve); } },
+            { path: 'account/index',  meta:{title: {i18n: 'title.account.index'} },name: 'account_index', component: resolve => { require(['@/views/account/account-index.vue'], resolve); } }
         ]
     },
     // {
-    //     path: '/role',
+    //     path: '/account',
     //     icon: 'person-stalker',
-    //     name: 'role',
+    //     name: 'account',
     //     meta: {
-    //         title: {i18n: 'title.role'}
+    //         title: {i18n: 'title.account'}
     //     },
     //     component: Main,
     //     children: [
-    //         { path: 'index',  meta:{title: {i18n: 'title.role.index'} },name: 'role_index', component: resolve => { require(['@/views/role/role-index.vue'], resolve); } }
+    //         { path: 'index',  meta:{title: {i18n: 'title.account.index'} },name: 'account_index', component: resolve => { require(['@/views/account/account-index.vue'], resolve); } }
     //     ]
     // },
 

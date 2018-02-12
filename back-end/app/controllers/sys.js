@@ -17,9 +17,9 @@ map.set(
         const self = this;
         try {
 
-            const { accountName, password} = ctx.request.body;
+            const { accountName, password,enable} = ctx.request.body;
             // 调用service获取返回数据
-            const result = await sysService.registUser(ctx, { accountName, password});
+            const result = await sysService.registUser(ctx, { accountName, password,enable});
     
             ctx.body =result;
         } catch (e) {
@@ -87,7 +87,7 @@ map.set(
 
 
 map.set(
-    // 查询权限
+    // 查询所有用户，以及某个角色下的用户
     ['GET', '/user/queryAllAndRoleUser'],
     async function (ctx, next) {
         const self = this;
@@ -96,6 +96,28 @@ map.set(
 
             // 调用service获取返回数据
             const result = await sysService.queryAllUserAndRoleUser(ctx,{roleId});
+            ctx.body = result;
+        } catch (e) {
+            resp.failed({ desc: e.stack || e.toString() }, ctx);
+        } finally {
+            // 执行流程交给下一个middle-ware
+            await next();
+        }
+    }
+);
+
+
+map.set(
+    // 查询账户列表信息
+    ['GET', '/account/query'],
+    async function (ctx, next) {
+        const self = this;
+        try {
+            const conditon = ctx.request.query;
+            const { id,account_name,pageIndex,pageSize,needTotal} = ctx.request.query;
+
+            // 调用service获取返回数据
+            const result = await sysService.queryAccount(ctx,{id,account_name},{pageIndex,pageSize,needTotal});
             ctx.body = result;
         } catch (e) {
             resp.failed({ desc: e.stack || e.toString() }, ctx);

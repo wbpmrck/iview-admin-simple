@@ -44,7 +44,7 @@
                                 </a>
                                 <DropdownMenu slot="list">
                                     <DropdownItem name="ownSpace">个人中心</DropdownItem>
-                                    <DropdownItem name="loginout" divided>退出登录</DropdownItem>
+                                    <DropdownItem name="logout" divided>退出登录</DropdownItem>
                                 </DropdownMenu>
                             </Dropdown>
                             <Avatar :src="avatorPath" style="background: #619fe7;margin-left: 10px;"></Avatar>
@@ -76,6 +76,7 @@
     import themeSwitch from './main-components/theme-switch/theme-switch.vue';
     import Cookies from 'js-cookie';
     import util from '@/libs/util.js';
+    import userService from '@/services/user-service';
     
     export default {
         components: {
@@ -141,18 +142,35 @@
                 this.shrink = !this.shrink;
             },
             handleClickUserDropdown (name) {
+                var self = this;
                 if (name === 'ownSpace') {
                     util.openNewPage(this, 'ownspace_index');
-                    this.$router.push({
+                    self.$router.push({
                         name: 'ownspace_index'
                     });
-                } else if (name === 'loginout') {
+                } else if (name === 'logout') {
                     // 退出登录
-                    this.$store.commit('logout', this);
-                    this.$store.commit('clearOpenedSubmenu');
-                    this.$router.push({
-                        name: 'login'
+                    const loadingEnd = self.$Message.loading({
+                        top:60,
+                        content: '处理中...',
+                        duration: 0
                     });
+                    userService.logout().then(function (resp) {
+                        loadingEnd();
+                        if(resp && resp.success){
+                            self.$store.commit('logout', self);
+                            self.$store.commit('clearOpenedSubmenu');
+                            self.$router.push({
+                                name: 'login'
+                            });
+                        }else{
+                            self.$Message.error('错误：'+resp.desc,9);
+                        }
+                    }).catch(function(err){
+                        loadingEnd();
+                        self.$Message.error('错误：'+err.message,9);
+                    });
+
                 }
             },
             checkTag (name) {

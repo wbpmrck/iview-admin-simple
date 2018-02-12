@@ -41,6 +41,7 @@ CREATE TABLE `sys_account`
 (
 	`id` BIGINT NOT NULL AUTO_INCREMENT,
 	`account_name` NVARCHAR(64) NOT NULL DEFAULT '' COMMENT '账户名称',
+	`enable` BIT(1) NOT NULL DEFAULT 1 COMMENT '是否开启。默认账户是开启的。 如果关闭，则该账户无法登录',
 	`password_secret` NVARCHAR(64) NOT NULL DEFAULT '' COMMENT 'SHA1(密码+salt)',
 	`salt` NVARCHAR(16) NOT NULL DEFAULT '' COMMENT '加密盐值',
 	`create_time` DATETIME(0) NOT NULL DEFAULT now(),

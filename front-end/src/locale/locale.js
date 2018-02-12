@@ -7,7 +7,11 @@ export default {
         'title.404': '页面不存在',
         'title.500': '出现错误',
         'title.system': '系统设置',
+
+        'title.account.index': '账户管理',
+        'title.account.create': '账户新增',
         'title.ownSpace': '用户中心',
+
         'title.access': '权限管理',
         'title.access.index': '权限管理',
         'title.access.create': '创建权限',
@@ -49,7 +53,11 @@ export default {
         'title.500': 'Error',
 
         'title.system': 'System Setting',
+
+        'title.account.index': 'Account Manage',
+        'title.account.create': 'Account Create',
         'title.ownSpace': 'User Center',
+
         'title.access': 'Access Control',
         'title.access.index': 'Access Manage',
         'title.access.create': 'Access Create',

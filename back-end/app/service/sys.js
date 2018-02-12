@@ -26,7 +26,7 @@ module.exports={
      * @param password：密码
      * @returns {Promise.<*>}
      */
-    async registUser(context, { accountName, password }) {
+    async registUser(context, { accountName, password,enable }) {
         accountName = accountName.toString();
         password = password.toString();
         // 参数简单检查
@@ -55,6 +55,7 @@ module.exports={
             const created = await models.sys_account.create({
                 account_name: accountName,
                 password_secret: hash,
+                enable: enable,
                 salt: salt,
             });
 
@@ -91,7 +92,8 @@ module.exports={
         if (validateResult.pass) {
             // 获取用户信息
             const users = await models.sys_account.findAll({ where: {
-                account_name: accountName
+                account_name: accountName,
+                enable:true
             } });
 
             // 如果用户存在:
@@ -242,6 +244,41 @@ module.exports={
             desc: `${validateResult.desc}${validateResult.funcDesc}`
         });
     },
+
+    /**
+     * 查询账户列表
+     * @param context
+     * @param condition
+     * @param pageIndex
+     * @param pageSize
+     * @param needTotal
+     * @returns {Promise.<*>}
+     */
+    async queryAccount(context,condition,{pageIndex=1,pageSize=10,needTotal=0}) {
+        queryHelper.removeEmptyCondition(condition);
+
+        queryHelper.setLike(condition,"account_name");
+
+        //准备返回对象
+        let ret ={
+            total:0,
+            data:[]
+        };
+
+        ret.data = await models.sys_account.findAll({
+            where:condition,
+            ...queryHelper.buildPageSQL({pageIndex,pageSize,needTotal})
+        });
+        if(needTotal) {
+            ret.total = await models.sys_account.count({
+                where:condition
+            });
+        }else{
+            delete ret.total
+        }
+        return resp.success({data: ret});
+    },
+
     /**
      * 查询所有权限信息，以及角色下的权限信息
      * @param context

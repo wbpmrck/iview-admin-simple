@@ -1,13 +1,22 @@
 import ajaxHelper from "./ajax-helper";
 
-/**
- * 新增 knowledge
- * @param knowledge
- */
+
 exports.login=function ({accountName,password}) {
   return ajaxHelper.post(
     `/user/login`,
     {accountName,password}
+  )
+};
+exports.logout=function () {
+  return ajaxHelper.post(
+    `/user/logout`,
+    {}
+  )
+};
+exports.regist=function ({accountName,password,enable}) {
+  return ajaxHelper.post(
+    `/user/regist`,
+    {accountName,password,enable}
   )
 };
 exports.queryAllAndRoleUser=function ({roleId}) {
@@ -15,6 +24,13 @@ exports.queryAllAndRoleUser=function ({roleId}) {
     `/user/queryAllAndRoleUser`,
     {roleId}
   )
+};
+
+exports.queryAccounts=function (condition) {
+    return ajaxHelper.get(
+        `/account/query`,
+        condition
+    )
 };
 
 //

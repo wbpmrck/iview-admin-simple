@@ -21,14 +21,7 @@ module.exports = function(sequelize, DataTypes) {
 		enable: {
 			type: DataTypes.BOOLEAN,
 			allowNull: false,
-			defaultValue: '1',
-        get() {
-            const e = this.getDataValue('enable');
-            return !!e
-        },
-        set(val) {
-            this.setDataValue('enable', val?1:0);
-        }
+			defaultValue: '1'
 		},
 		create_time: {
 			type: DataTypes.DATE,
