@@ -73,7 +73,53 @@ module.exports={
             desc: `${validateResult.desc}${validateResult.funcDesc}`
         });
     },
-    
+
+    /**
+     * 修改用户信息
+     * @param context
+     * @param id
+     * @param password
+     * @param enable
+     * @returns {Promise.<*>}
+     */
+    async updateUser(context, { id, password,enable }) {
+        // 参数简单检查
+        const validateResult = await validate(password, 'password').notNull().notEmptyStr()
+            .run();
+
+        // 如果验证通过
+        if (validateResult.pass) {
+            // 检查用户是否存在
+            const count = await models.sys_account.count({ where:{
+                id: id
+            }});
+
+            // 如果用户已经存在:
+            if (count < 1) {
+                return resp.failed({ code: resp.codes.NO_USER, desc: `,用户id:${id}` });
+            }
+            // 1.创建salt
+            const salt = parseInt(100000 * Math.random(), 10);
+
+            // 2.计算md5
+            const hash = sha1.encode(password + salt);
+
+            let toUpdate = {password_secret:hash,salt,enable,update_time:new Date()}
+            // 获取用户信息
+            let updated = await models.sys_account.update(toUpdate,{
+                where:{
+                    id:id
+                }
+            });
+            updated = updated.length>0?updated[0]:updated;//获取收到影响的行数，参考：http://docs.sequelizejs.com/class/lib/model.js~Model.html#static-method-update
+            return resp.success({data: updated});
+        }
+        return resp.failed({
+            code: resp.codes.PARAM_ILLEGAL,
+            desc: `${validateResult.desc}${validateResult.funcDesc}`
+        });
+    },
+
     
     /**
      * 用户账户登录
@@ -184,21 +230,29 @@ module.exports={
                             type: db.QueryTypes.SELECT
                         }
                     );
-    
-                    respData = {
-                        id:userInfo[0].account_id,
-                        name:userInfo[0].account_name,
-                        passwordSecret:user[0].password_secret,
-                        salt:user[0].salt,
-                        role:userInfo.map( (u)=>{
-                            return u.role_id
-                        }),
-                        access:userInfo.map( (u)=>{
-                            return {id:u.access_id,name:u.access_name}
-                        })
-                    };
-                    arrayUtil.removeDump(respData.role);
-                    arrayUtil.removeDump(respData.access,false,(a)=>{return a.id});
+
+                    if(userInfo && userInfo.length >0) {
+                        respData = {
+                            id: userInfo[0].account_id,
+                            name: userInfo[0].account_name,
+                            passwordSecret: user[0].password_secret,
+                            salt: user[0].salt,
+                            role: userInfo.map((u) => {
+                                return u.role_id
+                            }),
+                            access: userInfo.map((u) => {
+                                return {id: u.access_id, name: u.access_name}
+                            })
+                        };
+                        arrayUtil.removeDump(respData.role);
+                        arrayUtil.removeDump(respData.access, false, (a) => {
+                            return a.id
+                        });
+                    }else{
+                        return resp.failed({
+                            code: resp.codes.NOT_AUTH
+                        });
+                    }
                 }
         
             }

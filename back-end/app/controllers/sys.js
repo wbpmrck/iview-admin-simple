@@ -85,6 +85,27 @@ map.set(
     }
 );
 
+map.set(
+    // 用户账户修改
+    ['POST', '/user/update', Meta.needLogin().needAccess(["user.update"])],
+    async function (ctx, next) {
+        const self = this;
+        try {
+
+            const { id, password,enable} = ctx.request.body;
+            // 调用service获取返回数据
+            const result = await sysService.updateUser(ctx, { id, password,enable});
+
+            ctx.body =result;
+        } catch (e) {
+            resp.failed({ desc: e.toString() }, ctx);
+        } finally {
+            // 执行流程交给下一个middle-ware
+            await next();
+        }
+    }
+);
+
 
 map.set(
     // 查询所有用户，以及某个角色下的用户

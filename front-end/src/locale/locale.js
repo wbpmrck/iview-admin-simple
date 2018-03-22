@@ -10,6 +10,7 @@ export default {
 
         'title.account.index': '账户管理',
         'title.account.create': '账户新增',
+        'title.account.update': '账户编辑',
         'title.ownSpace': '用户中心',
 
         'title.access': '权限管理',
@@ -56,6 +57,7 @@ export default {
 
         'title.account.index': 'Account Manage',
         'title.account.create': 'Account Create',
+        'title.account.update': 'Account Update',
         'title.ownSpace': 'User Center',
 
         'title.access': 'Access Control',

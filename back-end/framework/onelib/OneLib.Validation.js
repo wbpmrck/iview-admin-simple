@@ -64,7 +64,7 @@ define('OneLib.Validation', [], function (require, exports, module) {
         },desc:"必须是字符串"},
         //验证字符非空
         notEmptyStr:{fn:function(cb){
-            cb&&cb(this.origin.trim()!=='')
+            cb&&cb(this.origin.toString().trim()!=='')
         },desc:"不能为空"},
         //验证输入不含特殊字符(只含有数字、英文、中文、下划线、空格,单引号、双引号、以及逗号、问号、句号的中英文版本)
         noSpecialStr: {fn:function (cb) {

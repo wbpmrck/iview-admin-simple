@@ -76,6 +76,7 @@
                 vm.mode = to.name;
                 if(vm.mode=="account_update"&& to.params.id !== undefined){
                     vm.form.id = to.params.id;
+                    //如果是编辑模式，则进入的时候先查询信息
                     vm.queryAccount();
                 }
             })
@@ -89,7 +90,9 @@
                     self.spinShow = false;
                     if(resp && resp.success){
                         if(resp.data.data && resp.data.data.length>0){
-                            self.form = resp.data.data[0];
+                            self.form.id = resp.data.data[0].id;
+                            self.form.accountName = resp.data.data[0].account_name;
+                            self.form.enable = resp.data.data[0].enable;
                         }
                     }else{
                         self.$Notice.error({
@@ -136,7 +139,7 @@
                                 self.$Message.error('错误：'+err.message,9);
                             });
                         }else if(self.mode == 'account_update'){
-                            userService.update(self.form).then(function (resp) {
+                            userService.update({id:self.form.id,password:self.form.password,enable:self.form.enable}).then(function (resp) {
                                 loadingEnd();
                                 if(resp && resp.success){
                                     self.$Message.success({

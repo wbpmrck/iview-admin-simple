@@ -26,6 +26,7 @@ module.exports = merge(webpackBaseConfig, {
         //开发阶段，使用devServer将api请求代理到后台服务端口
         proxy: {
 
+            "/": "http://localhost:1234",
             "/account": "http://localhost:1234",
             "/user": "http://localhost:1234",
             "/access": "http://localhost:1234",

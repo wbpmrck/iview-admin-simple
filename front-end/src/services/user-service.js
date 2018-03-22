@@ -19,6 +19,12 @@ exports.regist=function ({accountName,password,enable}) {
     {accountName,password,enable}
   )
 };
+exports.update=function ({id,password,enable}) {
+  return ajaxHelper.post(
+    `/user/update`,
+    {id,password,enable}
+  )
+};
 exports.queryAllAndRoleUser=function ({roleId}) {
   return ajaxHelper.get(
     `/user/queryAllAndRoleUser`,
