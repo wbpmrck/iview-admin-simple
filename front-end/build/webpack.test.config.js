@@ -7,35 +7,24 @@ const webpackBaseConfig = require('./webpack.base.config.js');
 const fs = require('fs');
 const package = require('../package.json');
 const path = require("path");
-//
+
 // fs.open('./build/env.js', 'w', function(err, fd) {
-//     const buf = 'export default "development";';
+//     const buf = 'module.exports="development";';
 //     fs.write(fd, buf, 0, buf.length, 0, function(err, written, buffer) {});
 // });
 
 module.exports = merge(webpackBaseConfig, {
+    // devtool: '#source-map',
     devtool: 'eval',
     output: {
-        path: path.resolve(__dirname,'../dist'),
-        publicPath: '/',
+        path: path.resolve(__dirname,'../../back-end/app/static'),
+        publicPath: `/`,
         filename: 'js/[name].js',
         // chunkFilename: 'js/[name].chunk.js'
     },
-    devServer: {
-        contentBase: path.resolve(__dirname,'../dist'),
-        //开发阶段，使用devServer将api请求代理到后台服务端口
-        proxy: {
-
-            "/": "http://localhost:1234",
-            "/account": "http://localhost:1234",
-            "/user": "http://localhost:1234",
-            "/access": "http://localhost:1234",
-            "/role": "http://localhost:1234",
-        }
-    },
     plugins: [
         new webpack.DefinePlugin({
-            ENV: require('../config/local.env')
+            ENV: require('../config/test.env')
         }),
         new ExtractTextPlugin({
             filename: 'css/[name].css',
@@ -47,8 +36,8 @@ module.exports = merge(webpackBaseConfig, {
         }),
         new HtmlWebpackPlugin({
             title: 'iView admin v' + package.version,
-            filename: 'index.html',
-            template: './src/template/index.local.ejs',
+            filename: '../views/index.html',
+            template: './src/template/index.ejs',
             inject: false
         }),
         new CopyWebpackPlugin([

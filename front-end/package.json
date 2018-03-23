@@ -4,7 +4,7 @@
   "description": "a management bases on iview",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack --progress --config build/webpack.dev.config.js",
+    "test-build": "webpack --progress --config build/webpack.test.config.js",
     "local-build": "webpack --progress --config build/webpack.local.config.js",
     "local": "webpack-dev-server --open --inline --hot --compress --config build/webpack.local.config.js",
     "build": "webpack --progress --hide-modules --config build/webpack.prod.config.js  ",
@@ -22,7 +22,7 @@
     "iview": "^2.9.2",
     "iview-area": "^1.5.12",
     "js-cookie": "^2.2.0",
-    "vue": "^2.5.9",
+    "vue": "^2.5.16",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
   },

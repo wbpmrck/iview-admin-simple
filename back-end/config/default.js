@@ -6,7 +6,7 @@ var config={
         version: '0.0.1'
     },
     access:{
-      rootUserRoleId:1,  //根用户的角色标识
+      rootUserRoleId:1,  //根用户的角色标识  默认账户:admin/123
       rootUserAccess:"__all__"   //根用户的权限标识（front-end工程里的配置，需要与这里一致。用于区别是系统根用户）
     },
     server: {

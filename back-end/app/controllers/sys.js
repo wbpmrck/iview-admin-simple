@@ -109,7 +109,7 @@ map.set(
 
 map.set(
     // 查询所有用户，以及某个角色下的用户
-    ['GET', '/user/queryAllAndRoleUser'],
+    ['GET', '/user/queryAllAndRoleUser', Meta.needLogin()],
     async function (ctx, next) {
         const self = this;
         try {
@@ -130,7 +130,7 @@ map.set(
 
 map.set(
     // 查询账户列表信息
-    ['GET', '/account/query'],
+    ['GET', '/account/query', Meta.needLogin().needAccess(["account.read"])],
     async function (ctx, next) {
         const self = this;
         try {
@@ -155,7 +155,7 @@ map.set(
 
 map.set(
     // 查询权限
-    ['GET', '/access/query'],
+    ['GET', '/access/query', Meta.needLogin().needAccess(["access.read"])],
     async function (ctx, next) {
         const self = this;
         try {
@@ -175,7 +175,7 @@ map.set(
 );
 map.set(
     // 查询权限列表以及是否在对应角色里
-    ['GET', '/access/queryAllAndRoleAccess'],
+    ['GET', '/access/queryAllAndRoleAccess', Meta.needLogin()],
     async function (ctx, next) {
         const self = this;
         try {
@@ -194,7 +194,7 @@ map.set(
 );
 map.set(
     // 修改权限
-    ['POST', '/access/update'],
+    ['POST', '/access/update', Meta.needLogin().needAccess(["access.update"])],
     async function (ctx, next) {
         const self = this;
         try {
@@ -213,7 +213,7 @@ map.set(
 );
 map.set(
     // 新增权限
-    ['POST', '/access/create'],
+    ['POST', '/access/create', Meta.needLogin().needAccess(["access.create"])],
     async function (ctx, next) {
         const self = this;
         try {
@@ -237,7 +237,7 @@ map.set(
  ====================================================== */
 map.set(
     // 查询角色信息
-    ['GET', '/role/query'],
+    ['GET', '/role/query', Meta.needLogin().needAccess(["role.read"])],
     async function (ctx, next) {
         const self = this;
         try {
@@ -257,7 +257,7 @@ map.set(
 
 map.set(
     // 新增角色
-    ['POST', '/role/create'],
+    ['POST', '/role/create', Meta.needLogin().needAccess(["role.create"])],
     async function (ctx, next) {
         const self = this;
         try {
@@ -276,7 +276,7 @@ map.set(
 );
 map.set(
     // 编辑角色
-    ['POST', '/role/update'],
+    ['POST', '/role/update', Meta.needLogin().needAccess(["role.update"])],
     async function (ctx, next) {
         const self = this;
         try {
@@ -296,7 +296,7 @@ map.set(
 
 map.set(
     // 从角色中移除N个用户
-    ['POST', '/role/removeUser'],
+    ['POST', '/role/removeUser', Meta.needLogin().needAccess(["role.update"])],
     async function (ctx, next) {
         const self = this;
         try {
@@ -316,7 +316,7 @@ map.set(
 );
 map.set(
     // 新增N个用户到角色中
-    ['POST', '/role/addUser'],
+    ['POST', '/role/addUser', Meta.needLogin().needAccess(["role.update"])],
     async function (ctx, next) {
         const self = this;
         try {
@@ -338,7 +338,7 @@ map.set(
 
 map.set(
     // 从角色中移除N个权限
-    ['POST', '/role/removeAccess'],
+    ['POST', '/role/removeAccess', Meta.needLogin().needAccess(["role.update"])],
     async function (ctx, next) {
         const self = this;
         try {
@@ -358,7 +358,7 @@ map.set(
 );
 map.set(
     // 新增N个权限到角色中
-    ['POST', '/role/addAccess'],
+    ['POST', '/role/addAccess', Meta.needLogin().needAccess(["role.update"])],
     async function (ctx, next) {
         const self = this;
         try {

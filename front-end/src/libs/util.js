@@ -1,9 +1,9 @@
 import axios from 'axios';
-import env from '../../build/env';
+// import env from '../../build/env';
 import semver from 'semver';
 import packjson from '../../package.json';
 import Cookies from 'js-cookie';
-import Config from '@/config/default';
+// import Config from '@/config/default';
 import Vue from 'vue';
 
 let util = {
@@ -60,9 +60,10 @@ util.oneOf = function (ele, targetArr) {
  */
 util.showThisRoute = function (itAccess, currentAccess) {
     // if (typeof itAccess === 'object' && Array.isArray(itAccess)) {
-    
+    console.log(`申请权限:${itAccess},当前权限${currentAccess}`)
     //如果是系统管理员，则所有路由都开放
-    if(currentAccess === Config.root_user_access){
+    // if(currentAccess === Config.root_user_access){
+    if(currentAccess === ENV.ROOT_USER_ACCESS){
       return true;
     }
   

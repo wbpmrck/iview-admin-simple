@@ -42,8 +42,14 @@ const app = {
     },
     actions:{
         updateMenulist ({ state, commit, rootState }) {
+            console.log(`before updateMenulist appRouter[0].children.length=${appRouter[0].children.length}`);
             // let accessCode = Util.getAccessInfo();
-            let accessCode = rootState.user.userInfo.access;
+
+            if(!rootState.user.userInfo){
+                return;
+            }
+            let accessCode = rootState.user.userInfo ? rootState.user.userInfo.access:"";
+            console.log('access:'+accessCode)
             let menuList = [];
             appRouter.forEach((item, index) => {
 
@@ -55,6 +61,7 @@ const app = {
                 if(item.children.length > 0){
                     let childrenArr = [];
                     childrenArr = item.children.filter(child => {
+                        console.log(`准备检查路由:`+child.name);
                         if (child.access !== undefined) {
                             if (Util.showThisRoute(child.access, accessCode)) {
                                 return child;
@@ -65,10 +72,12 @@ const app = {
                     });
                     if(childrenArr.length > 0){
                         let len = menuList.push(item);
-                        menuList[len - 1].children = childrenArr;
+                        // menuList[len - 1].children = childrenArr;
+                        menuList[len - 1].childrenShow = childrenArr;
                     }
                 }
             });
+            console.log(`after updateMenulist appRouter[0].children.length=${appRouter[0].children.length}`);
             // state.menuList = menuList;
             commit('doUpdateMenulist',menuList);
         },

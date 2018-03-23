@@ -25,7 +25,7 @@ module.exports = merge(webpackBaseConfig, {
     },
     plugins: [
         new webpack.DefinePlugin({
-            ENV: JSON.stringify("production")
+            ENV: require('../config/prod.env')
         }),
         new cleanWebpackPlugin(['dist/*'], {
             root: path.resolve(__dirname, '../')
