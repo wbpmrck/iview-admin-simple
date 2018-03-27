@@ -6,5 +6,5 @@
 module.exports = {
     NAME: '"local"',
     ROOT_USER_ACCESS: '"__all__"', //表示根用户的权限
-    DYNAMIC_DOMAIN: '"http://localhost:8080"' //本地的网站后端部署地址
+    DYNAMIC_DOMAIN: '"http://localhost:1234"' //本地的网站后端部署地址
 }

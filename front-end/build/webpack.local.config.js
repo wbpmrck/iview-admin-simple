@@ -16,7 +16,8 @@ const path = require("path");
 module.exports = merge(webpackBaseConfig, {
     devtool: 'eval',
     output: {
-        path: path.resolve(__dirname,'../dist'),
+        // path: path.resolve(__dirname,'../dist'),
+        path: path.resolve(__dirname,'../../back-end/app/static'),
         publicPath: '/',
         filename: 'js/[name].js',
         // chunkFilename: 'js/[name].chunk.js'
@@ -45,15 +46,22 @@ module.exports = merge(webpackBaseConfig, {
             name: ['vender-exten', 'vender-base'],
             minChunks: Infinity
         }),
+
         new HtmlWebpackPlugin({
             title: 'iView admin v' + package.version,
-            filename: 'index.html',
-            template: './src/template/index.local.ejs',
+            filename: '../views/index.html',
+            template: './src/template/index.ejs',
             inject: false
         }),
+        // new HtmlWebpackPlugin({
+        //     title: 'iView admin v' + package.version,
+        //     filename: 'index.html',
+        //     template: './src/template/index.local.ejs',
+        //     inject: false
+        // }),
         new CopyWebpackPlugin([
             {
-                from: 'src/views/main-components/theme-switch/theme'
+                from: 'src/views-core/main-components/theme-switch/theme'
             },
             // {
             //     from: 'src/views/my-components/text-editor/tinymce'

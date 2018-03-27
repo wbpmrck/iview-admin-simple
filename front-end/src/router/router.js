@@ -25,7 +25,7 @@ export const page403 = {
         title: {i18n: 'title.403'}
     },
     name: 'error-403',
-    component: resolve => { require(['@//views/error-page/403.vue'], resolve); }
+    component: resolve => { require(['@//views-core/error-page/403.vue'], resolve); }
 };
 
 export const page500 = {

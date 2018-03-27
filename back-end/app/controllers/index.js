@@ -24,7 +24,7 @@ map.set(
     ["GET","/"],
     async function (ctx,next) {
         await ctx.render('index.html', {
-            user: JSON.stringify(ctx.getSessionUser()),
+            user: JSON.stringify(ctx.getSessionUser()) ||"undefined",
             title:"首页",
             // user: JSON.stringify({id:1})
         });
