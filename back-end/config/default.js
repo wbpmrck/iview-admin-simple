@@ -12,21 +12,38 @@ var config={
     server: {
         port: 1234
     },
-    db :{
-        modelPath: require('path').join(__dirname, '../app/dao/models/generated'),
-        db: 'mall_xunfei',
-        username: 'root',
-        password: 'kaicui',
-        dialect: 'mysql',
-        host: '127.0.0.1',
-        port: 3306,
-        timezone:'+08:00', //很重要，sequenlize会根据时区，自动处理 写入、和读取日期时间的数值转换，方便
-        pool: {
-            maxConnections: 10,
-            minConnections: 0,
-            maxIdleTime: 30000
-        }
-    },
+    db :[
+        {
+            modelPath: require('path').join(__dirname, '../app/dao/models/db-system/generated'),
+            db: 'mall_xunfei',
+            username: 'root',
+            password: 'kaicui',
+            dialect: 'mysql',
+            host: '127.0.0.1',
+            port: 3306,
+            timezone:'+08:00', //很重要，sequenlize会根据时区，自动处理 写入、和读取日期时间的数值转换，方便
+            pool: {
+                maxConnections: 10,
+                minConnections: 0,
+                maxIdleTime: 30000
+            }
+        },
+        // {
+        //     modelPath: require('path').join(__dirname, '../app/dao/models/db-system/generated'),
+        //     db: 'mall_xunfei',
+        //     username: 'root',
+        //     password: 'kaicui',
+        //     dialect: 'mysql',
+        //     host: '127.0.0.1',
+        //     port: 3306,
+        //     timezone:'+08:00', //很重要，sequenlize会根据时区，自动处理 写入、和读取日期时间的数值转换，方便
+        //     pool: {
+        //         maxConnections: 10,
+        //         minConnections: 0,
+        //         maxIdleTime: 30000
+        //     }
+        // },
+    ],
 
     template: {
         path: 'app/views',
