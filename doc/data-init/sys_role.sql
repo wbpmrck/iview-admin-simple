@@ -11,17 +11,17 @@
  Target Server Version : 50713
  File Encoding         : utf-8
 
- Date: 04/16/2018 19:04:41 PM
+ Date: 04/16/2018 19:05:08 PM
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
---  Records of `sys_account`
+--  Records of `sys_role`
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_account` VALUES ('1', 'admin', b'1', '3614abf42e9fe642751855401f6ab5f36355d5d2', '66098', '2017-12-19 10:56:58', '2018-03-22 20:49:53');
+INSERT INTO `sys_role` VALUES ('1', '根用户root', '自动具备所有权限，无需授权的最强内置用户角色', b'1', '2017-12-19 14:44:14', '2018-02-07 20:14:01');
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;
