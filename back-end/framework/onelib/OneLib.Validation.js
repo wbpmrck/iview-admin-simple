@@ -177,9 +177,9 @@ define('OneLib.Validation', [], function (require, exports, module) {
         //一个验证组开启的时候，可以含有一个初始的验证字段
         self.targets=[];
         // if(param!==undefined){
-            self.curTarget = new ValidateTarget(self,param,desc);
-            self.targets.push(self.curTarget);
-            //return target;
+        self.curTarget = new ValidateTarget(self,param,desc);
+        self.targets.push(self.curTarget);
+        //return target;
         // }
     }
     /**
@@ -194,6 +194,32 @@ define('OneLib.Validation', [], function (require, exports, module) {
         return self;
         //return target; //返回target,这样api层面可以直接对对象进行验证操作
     };
+
+
+    /**
+     * 从验证对象中移除最后一项
+     * @returns {ValidateGroup}
+     */
+    ValidateGroup.prototype.popLast= function () {
+        this.targets.splice(this.targets.length-1,1);
+        this.currentTarget = this.targets[this.targets.length-1];
+        return this;
+    }
+
+    ValidateGroup.prototype.if= function (conditionFn) {
+        if(conditionFn && typeof conditionFn === 'function'){
+            var appendTarget = conditionFn();
+            if(!appendTarget){
+                this.popLast();
+            }
+        }else if(conditionFn){
+            //do nothing because condition is true
+        }
+        else{
+            this.popLast();
+        }
+        return this;
+    }
 
     /**
      * 订阅验证组的失败事件
@@ -275,6 +301,15 @@ define('OneLib.Validation', [], function (require, exports, module) {
     ValidateTarget.prototype.and= function (param,desc) {
         return this.group.and.call(this.group,param,desc);
     }
+
+    /**
+     * 判断生效函数的返回结果，如果false，则删除之前加入的验证对象
+     * @param conditionFn
+     * @returns {ValidateTarget}
+     */
+    ValidateTarget.prototype.if= function (conditionFn) {
+        return this.group.if(conditionFn);
+    }
     /**
      * 订阅失败事件
      * @param cb(funcKey,args)
@@ -305,12 +340,12 @@ define('OneLib.Validation', [], function (require, exports, module) {
         var self = this;//save the this ref
 
         if(self.funcChain && self.funcChain.length){
-    
+
             //遍历内部的验证器，一个个执行,并设置参数
             arrayExt.eachAsync(self.funcChain,function(item,idx,next,cancel){
                 var validateFunc = validateFunctions[item.key],
                     args = item.args;
-        
+
                 //组织入参，并调用内部的验证函数。入参的最后一个参数，总是回调
                 validateFunc.fn.apply(self,args.concat(function (pass,otherErrMsg) {
                     if(pass){
@@ -323,10 +358,10 @@ define('OneLib.Validation', [], function (require, exports, module) {
                         }
                     }else{
                         //执行失败，发射failed消息
-                        
-                        
+
+
                         var errTemplate = validateFunc.desc;
-    
+
                         //如果执行过程中发现了其他错误消息，则不使用验证项目的模板消息
                         if(otherErrMsg){
                             errTemplate=otherErrMsg;
@@ -342,8 +377,8 @@ define('OneLib.Validation', [], function (require, exports, module) {
                         else if(typeof errTemplate ==='function'){
                             errTemplate = errTemplate.apply(self,args);
                         }
-                        
-                        
+
+
                         self.emit("failed",item.key,item.args,errTemplate)
                     }
                 }));

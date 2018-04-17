@@ -17,8 +17,8 @@ const queryHelper = require('../../framework/dao/queryHelper');
 const dateFactory = require('../../framework/time/factory');
 
 module.exports={
-    
-    
+
+
     /**
      * 注册用户信息
      * @param context
@@ -120,7 +120,7 @@ module.exports={
         });
     },
 
-    
+
     /**
      * 用户账户登录
      * @param context：请求上下文
@@ -161,8 +161,8 @@ module.exports={
             desc: `${validateResult.desc}${validateResult.funcDesc}`
         });
     },
-    
-    
+
+
     /**
      * 根据用户id，查询用户详细信息，包括权限和角色（系统根用户组，自动具备所有权限）
      * @param context
@@ -171,7 +171,7 @@ module.exports={
      */
     async queryUserInfo(context, { id }) {
         // 参数简单检查
-        const validateResult = await validate(id, 'id').notNull().existInTable("sys_account","id")
+        const validateResult = await validate(id, 'id').notNull().existInTable(db,"sys_account","id")
             .run();
 
         // 如果验证通过
@@ -194,11 +194,11 @@ module.exports={
                 where A.id = :id
                 and D.\`enable\`=1
             `,
-                    {
-                        replacements: { id:id},
-                        type: db.QueryTypes.SELECT
-                    }
-                );
+                {
+                    replacements: { id:id},
+                    type: db.QueryTypes.SELECT
+                }
+            );
             if(userInfo && userInfo.length >0){
                 //检查是否系统根用户
                 let userHasRoot = userInfo.filter( (u)=>{
@@ -254,10 +254,10 @@ module.exports={
                         });
                     }
                 }
-        
+
             }
 
-                return resp.success({ data: respData });
+            return resp.success({ data: respData });
         }
         return resp.failed({
             code: resp.codes.PARAM_ILLEGAL,
@@ -273,7 +273,7 @@ module.exports={
      */
     async queryAllUserAndRoleUser(context, { roleId }) {
         // 参数简单检查
-        const validateResult = await validate(roleId, 'roleId').notNull().existInTable("sys_role","id")
+        const validateResult = await validate(roleId, 'roleId').notNull().existInTable(db,"sys_role","id")
             .run();
 
         // 如果验证通过
@@ -341,7 +341,7 @@ module.exports={
      */
     async queryAllAccessAndRoleAccess(context, { roleId }) {
         // 参数简单检查
-        const validateResult = await validate(roleId, 'roleId').notNull().existInTable("sys_role","id")
+        const validateResult = await validate(roleId, 'roleId').notNull().existInTable(db,"sys_role","id")
             .run();
 
         // 如果验证通过
@@ -370,7 +370,7 @@ module.exports={
     /*
         权限相关
      */
-    
+
     /**
      * 查询权限列表
      * @param context
@@ -379,7 +379,7 @@ module.exports={
      */
     async queryAccess(context,condition,{pageIndex=1,pageSize=10,needTotal=0}) {
         queryHelper.removeEmptyCondition(condition);
-        
+
         queryHelper.setLike(condition,"name");
         queryHelper.setLike(condition,"desc");
 
@@ -426,7 +426,7 @@ module.exports={
         const validateResult = await validate(name, 'name').notNull().notEmptyStr()
             .and(desc, 'desc').notNull().notEmptyStr()
             .and(enable, 'enable').notNull().isOneOf([true,false])
-            .and(name, 'name').notExistInTable("sys_access","name")
+            .and(name, 'name').notExistInTable(db,"sys_access","name")
             .run();
 
         // 如果验证通过
@@ -493,7 +493,7 @@ module.exports={
         const validateResult = await validate(name, 'name').notNull().notEmptyStr()
             .and(desc, 'desc').notNull().notEmptyStr()
             .and(enable, 'enable').notNull().isOneOf([true,false])
-            .and(name, 'name').notExistInTable("sys_role","name")
+            .and(name, 'name').notExistInTable(db,"sys_role","name")
             .run();
 
         // 如果验证通过
@@ -609,7 +609,7 @@ module.exports={
     async addRoleUser(context,{roleId,userIds}) {
         // 参数简单检查
         const validateResult = await validate(roleId, 'roleId').notNull().positiveInt()
-            .existInTable("sys_role","id")
+            .existInTable(db,"sys_role","id")
             .run();
 
         // 如果验证通过
@@ -649,7 +649,7 @@ module.exports={
     async addRoleAccess(context,{roleId,accessIds}) {
         // 参数简单检查
         const validateResult = await validate(roleId, 'roleId').notNull().positiveInt()
-            .existInTable("sys_role","id")
+            .existInTable(db,"sys_role","id")
             .run();
 
         // 如果验证通过

@@ -9,6 +9,8 @@ var orm = require('koa-orm')(config.db);
 
 module.exports = {
     middleware:orm.middleware, //这个 middleware 用于在koa的处理流程中，往context里注入sequelizejs对象，没什么大用
+    // db_ota_version:orm.database('ota_version').sequelize, //如果config/default中配置了多个数据库，可以在这里增加
+    // models_ota_version:orm.database('ota_version').sequelize.models,
     db:orm.database().sequelize, //默认的第一个数据库，目前也只有一个库
     models:orm.database().sequelize.models // 默认的第一个数据库里的模型定义
 }
