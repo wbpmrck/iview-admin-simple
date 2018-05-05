@@ -12,7 +12,7 @@ const map = new Map();
 
 map.set(
     // 用户注册，参数：用户名、密码
-    ['POST', '/user/regist' , Meta.needLogin().needAccess(["user.add"])],
+    ['POST', '/user/regist' , Meta.needLogin().needAccess(["account.create"])],
     async function (ctx, next) {
         const self = this;
         try {
@@ -87,7 +87,7 @@ map.set(
 
 map.set(
     // 用户账户修改
-    ['POST', '/user/update', Meta.needLogin().needAccess(["user.update"])],
+    ['POST', '/user/update', Meta.needLogin().needAccess(["account.update"])],
     async function (ctx, next) {
         const self = this;
         try {
