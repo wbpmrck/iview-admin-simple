@@ -18,7 +18,7 @@ module.exports=async (ctx,next)=>{
     if(matched && matched.path && matched.path.length>0 && matched.path[0].name){
         
         let meta = matched.path[0].name;
-        if(meta.accessNeed){
+        if(meta.accessNeed & meta.accessNeed.length > 0){
             logger.debug("检查权限状态");
             if(!ctx.hasAccessTo(meta.accessNeed)){
                 //如果是html请求
